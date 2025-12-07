@@ -3,8 +3,14 @@ const app = express();
 
 const dbgr = require('debug')('app:js');
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 require('dotenv').config();
 require('./config/mongoose-config')();
+
+app.use(express.json({limit: '50kb'}));
+app.use(express.urlencoded({extended: true, limit: '50kb'}));
 
 // for web routes
 app.use('/', require('./routes/index'));

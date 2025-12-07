@@ -15,8 +15,8 @@ const ownerSchema = new mongoose.Schema({
         required: true
     },
     role: {
-        enum: ['owner','user'],
-        default: 'owner'
+        type: String,
+        enum: ['owner','user']
     },
     products: [
         {

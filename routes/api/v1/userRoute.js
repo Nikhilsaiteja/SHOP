@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const { registerUser, loginUser } = require('../../../controllers/api/userController');
+
 // test route
 router.get('/test', (req,res)=>{
     res.status(200).json({
@@ -9,5 +11,9 @@ router.get('/test', (req,res)=>{
         timeStamp: new Date().toISOString()
     })
 });
+
+router.post('/register', registerUser);
+
+router.post('/login', loginUser);
 
 module.exports = router;
