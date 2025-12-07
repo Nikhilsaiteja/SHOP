@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Nikhilsaiteja/SHOP#readme",
   "dependencies": {
     "debug": "^4.4.3",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "mongoose": "^9.0.1",
     "nodemon": "^3.1.11"
