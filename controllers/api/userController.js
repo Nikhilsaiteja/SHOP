@@ -5,7 +5,7 @@ const dbgr = require('debug')('app:userController');
 const registerUser = async (req,res,next)=>{
     try{
         dbgr('Request body received in controller:', req.body);
-        const {name,email,password,role, ...additionalData} = req.body;
+        const {name,email,password,role='buyer', ...additionalData} = req.body;
 
         const {user, token} = await UserService.registerUser(name, email, password, role, additionalData);
         dbgr('User registered successfully:', user);
