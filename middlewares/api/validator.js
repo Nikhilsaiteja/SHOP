@@ -27,10 +27,10 @@ const validateUserRegisteration=(req,res,next)=>{
         email: joi
             .string()
             .email()
-            .required()
-            .trim()
             .min(5)
-            .max(254),
+            .max(254)
+            .required()
+            .trim(),
         password: joi
             .string()
             .min(8)

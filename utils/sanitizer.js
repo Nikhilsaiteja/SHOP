@@ -21,13 +21,12 @@ class Sanitizer{
     }
 
     static sanitizeEmail(email){
-        let cleanEmail = DOMPurify.sanitize.toLowerCase(email,
+        let cleanEmail = DOMPurify.sanitize(email,
             {
                 ALLOWED_TAGS: [],
                 ALLOWED_ATTR: []
             }
         )
-        cleanEmail = validator.isEmail(cleanEmail) ? cleanEmail : '';
         dbgr('sanitized email:', cleanEmail);
         return cleanEmail;
     }
@@ -76,10 +75,10 @@ class Sanitizer{
                 cleanObj[key] = Sanitizer.sanitizeText(obj[key]);
             }
             dbgr(`sanitized object key: ${key}, value: ${cleanObj[key]}`);
-            return cleanObj;
         }
+        return cleanObj;
     }
 
 }
 
-module.exports = new Sanitizer();
+module.exports = Sanitizer;
