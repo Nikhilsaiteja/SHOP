@@ -19,7 +19,8 @@ const productSchema = new mongoose.Schema({
         default: 0
     },
     category: {
-        enum: ['electronics','accessories', 'clothing', 'books', 'home', 'beauty', 'sports', 'other'],
+        type: String,
+        enum: ['electronics','accessories', 'clothes', 'books', 'home', 'beauty', 'sports', 'other'],
         default: 'other'
     },
     likes: [

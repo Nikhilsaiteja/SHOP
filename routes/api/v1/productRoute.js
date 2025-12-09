@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const { createProduct } = require('../../../controllers/api/productController');
+
 // test route
 router.get('/test', (req,res)=>{
     res.status(200).json({
@@ -9,5 +11,7 @@ router.get('/test', (req,res)=>{
         timeStamp: new Date().toISOString()
     })
 });
+
+router.post('/create', createProduct);
 
 module.exports = router;
