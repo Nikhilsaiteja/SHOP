@@ -5,7 +5,8 @@ const dbgr = require('debug')('app:productController');
 const createProduct = async(req,res,next)=>{
     try{
         dbgr("Request received in controller layer: ", req.body);
-        const { name, ownerId, price, discount, category } = req.body;
+        const { name, price, discount, category } = req.body;
+        const ownerId = req.params.ownerId;
 
         const newProduct = await ProductService.createProduct(name, ownerId, price, discount, category);
         dbgr("Response from service layer: ", newProduct);

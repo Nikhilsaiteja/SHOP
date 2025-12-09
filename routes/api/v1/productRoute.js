@@ -12,6 +12,6 @@ router.get('/test', (req,res)=>{
     })
 });
 
-router.post('/create', createProduct);
+router.post('/create/:ownerId', createProduct);
 
 module.exports = router;

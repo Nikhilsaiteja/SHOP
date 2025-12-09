@@ -27,7 +27,7 @@ class ProductService{
                 category
             }], { session });
 
-            await owner.products.push(newProduct[0]._id);
+            owner.products.push(newProduct[0]._id);
             await owner.save({ session });
 
             await session.commitTransaction();
