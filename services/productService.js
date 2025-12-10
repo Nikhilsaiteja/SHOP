@@ -43,6 +43,17 @@ class ProductService{
         }
     }
 
+    async getAllProducts(){
+        try{
+            const products = await productModel.find({});
+            dbgr("Fetched products: ", products);
+            return products;
+        }catch(err){
+            dbgr("Error in fetching products: ", err);
+            throw err;
+        }
+    }
+
 }
 
 module.exports = new ProductService();
