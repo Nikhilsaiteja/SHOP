@@ -73,6 +73,23 @@ class UserService{
         }
     }
 
+    async deleteUser(userId){
+        try{
+            dbgr('Data received in deleteUser service:', {userId});
+
+            const user = await userModel.findByIdAndDelete(userId) || await ownerModel.findByIdAndDelete(userId);
+            if(!user){
+                dbgr('No user found with ID:', userId);
+                throw new Error('User not found');
+            }
+
+            dbgr('User deleted successfully:', user);
+        }catch(error){
+            dbgr('Error in deleteUser:', error);
+            throw error;
+        }
+    }
+
 }
 
 module.exports = new UserService();

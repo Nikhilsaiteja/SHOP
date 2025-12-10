@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { validateUserRegisteration, validateUserLogin } = require('../../../middlewares/api/validator');
-const { registerUser, loginUser } = require('../../../controllers/api/userController');
+const { registerUser, loginUser, logoutUser, deleteUser } = require('../../../controllers/api/userController');
 
 // test route
 router.get('/test', (req,res)=>{
@@ -16,5 +16,9 @@ router.get('/test', (req,res)=>{
 router.post('/register',validateUserRegisteration, registerUser);
 
 router.post('/login', validateUserLogin, loginUser);
+
+router.post('/logout/:id', logoutUser);
+
+router.delete('/delete/:id', deleteUser);
 
 module.exports = router;

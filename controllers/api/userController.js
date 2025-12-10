@@ -48,7 +48,45 @@ const loginUser = async (req,res,next)=>{
     }
 }
 
+const logoutUser = async (req,res,next)=>{
+    try{
+        const userId = req.params.id;
+        dbgr('Logging out user with ID:', userId);
+
+        res.clearCookie('token');
+
+        res.status(200).json({
+            message: 'User logged out successfully',
+            success: true,
+            timestamp: new Date().toISOString()
+        })
+    }catch(error){
+        dbgr('Error in logoutUser controller:', error);
+        next(error);
+    }
+}
+
+const deleteUser = async (req,res,next)=>{
+    try{
+        const userId = req.params.id;
+        dbgr('Deleting user with ID:', userId);
+
+        await UserService.deleteUser(userId);
+
+        res.status(200).json({
+            message: 'User deleted successfully',
+            success: true,
+            timestamp: new Date().toISOString()
+        })
+    }catch(error){
+        dbgr('Error in deleteUser controller:', error);
+        next(error);
+    }
+}
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser,
+    deleteUser
 }
