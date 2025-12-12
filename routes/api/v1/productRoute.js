@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const { createProduct } = require('../../../controllers/api/productController');
+const isLoggedIn = require('../../../middlewares/api/isLoggedIn');
+
+router.use(isLoggedIn);
 
 // test route
 router.get('/test', (req,res)=>{

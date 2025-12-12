@@ -5,13 +5,15 @@ const dbgr = require('debug')('app:isLoggedIn');
 const isLoggedIn = (req,res,next)=>{
     try{
         dbgr('Checking if user is logged in');
-        const token = req.headers.authorization;
+        let token = req.headers.authorization;
+        dbgr('Authorization header: ', token);
         if(!token){
             dbgr('No token found, user is not logged in');
             return next(error('User not logged in'));
         }
 
         token = token.split(' ')[1];
+        dbgr('Extracted token: ', token);
 
         jwt.verify(token, process.env.JWT_SECRET, (err, data)=>{
             if(err){
