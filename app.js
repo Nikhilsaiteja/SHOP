@@ -1,3 +1,5 @@
+const config = require('./config/environment');
+
 const express = require('express');
 const app = express();
 
@@ -7,6 +9,13 @@ const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 const errorHandler = require('./utils/errorHandler');
+
+const cors = require('cors');
+
+app.use(cors({
+    origin: config.security.cors[config.env],
+    credentials: true
+}))
 
 require('dotenv').config();
 require('./config/mongoose-config')();
@@ -22,6 +31,10 @@ app.use('/api', require('./routes/api/index'));
 
 app.use(errorHandler);
 
-app.listen(3000, ()=>{
-    dbgr('Server is running on port 3000');
+app.listen(config.port, ()=>{
+    dbgr(`
+Environment: ${config.env},
+App URL: ${config.appUrl}  
+        `);
+    dbgr(`Server is running on port ${config.port}`);
 });

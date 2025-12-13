@@ -9,7 +9,12 @@ const dbgr = require('debug')('app:viewController');
 const showRegisterPage = async (req,res,next)=>{
     try{
         dbgr("Rendering register page");
-        // In progress
+        res.status(200).json({
+            message: "Register page data",
+            data: {},
+            success: true,
+            timestamp: new Date().toISOString()
+        });
     }catch(err){
         dbgr("Error in showRegisterPage: ", err);
         next(err);

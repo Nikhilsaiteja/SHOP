@@ -5,7 +5,18 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+
+    "dev": "cross-env NODE_ENV=development nodemon app.js",
+    "dev:debug": "NODE_ENV=development DEBUG=app:* nodemon app.js",
+
+    "qa": "cross-env NODE_ENV=qa node app.js",
+    "qa:debug": "cross-env NODE_ENV=qa DEBUG=app:* node app.js",
+
+    "uat": "cross-env NODE_ENV=uat node app.js",
+    "uat:debug": "cross-env NODE_ENV=uat DEBUG=app:* node app.js",
+
+    "start": "cross-env NODE_ENV=production node app.js",
+    "prod:debug": "cross-env NODE_ENV=production DEBUG=app:* node app.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +33,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "debug": "^4.4.3",
     "dompurify": "^3.3.0",
     "dotenv": "^17.2.3",
@@ -32,5 +44,8 @@
     "mongoose": "^9.0.1",
     "nodemon": "^3.1.11",
     "validator": "^13.15.23"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0"
   }
 }
