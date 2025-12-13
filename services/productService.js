@@ -3,6 +3,8 @@ const ownerModel = require('../models/owner-model');
 
 const dbgr = require('debug')('app:services:productService');
 
+const cache = require('../utils/redisCache');
+
 const mongoose = require('mongoose');
 
 class ProductService{
@@ -45,8 +47,17 @@ class ProductService{
 
     async getAllProducts(){
         try{
+            const cacheKey = 'products:all';
+            const cacheProducts = await cache.get(cacheKey);
+            if(cacheProducts){
+                dbgr("Products fetched from cache: ", cacheProducts);
+                return JSON.parse(cacheProducts);
+            }
+
             const products = await productModel.find({});
             dbgr("Fetched products: ", products);
+
+            await cache.set(cacheKey, JSON.stringify(products));
             return products;
         }catch(err){
             dbgr("Error in fetching products: ", err);

@@ -19,6 +19,7 @@ app.use(cors({
 
 require('dotenv').config();
 require('./config/mongoose-config')();
+const redisClient = require('./config/redis-config');
 
 app.use(express.json({limit: '50kb'}));
 app.use(express.urlencoded({extended: true, limit: '50kb'}));
