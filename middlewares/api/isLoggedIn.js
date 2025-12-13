@@ -9,7 +9,7 @@ const isLoggedIn = (req,res,next)=>{
         dbgr('Authorization header: ', token);
         if(!token){
             dbgr('No token found, user is not logged in');
-            return next(error('User not logged in'));
+            return next(new Error('User not logged in'));
         }
 
         token = token.split(' ')[1];
@@ -18,7 +18,7 @@ const isLoggedIn = (req,res,next)=>{
         jwt.verify(token, process.env.JWT_SECRET, (err, data)=>{
             if(err){
                 dbgr('Token verification failed: ', err);
-                return next(err('User not logged in'));
+                return next(new Error('User not logged in'));
             }
 
             req.user = data;
