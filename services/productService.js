@@ -9,10 +9,10 @@ const mongoose = require('mongoose');
 
 class ProductService{
 
-    async createProduct(name, ownerId, price, discount, category){
+    async createProduct(name, ownerId, price, discount, category, images){
         const session = await mongoose.startSession();
         try{
-            dbgr('Data received in service layer: ', {name, ownerId, price, discount, category});
+            dbgr('Data received in service layer: ', {name, ownerId, price, discount, category, images});
             session.startTransaction();
 
             const owner = await ownerModel.findById(ownerId).session(session);
@@ -20,13 +20,18 @@ class ProductService{
                 dbgr("Owner not found with id: ", ownerId);
                 throw new Error('Owner not found');
             }
+
+            const filepaths = images.map(file => file.path);
+            const imagePaths = filepaths.map(fp => fp.replace(/\\/g, '/').split('public')[1]); 
+            dbgr('Processed image paths:', imagePaths);
             
             const newProduct = await productModel.create([{
                 name,
                 owner: ownerId,
                 price,
                 discount,
-                category
+                category,
+                images: imagePaths
             }], { session });
 
             owner.products.push(newProduct[0]._id);
