@@ -34,6 +34,9 @@ class ProductService{
 
             await session.commitTransaction();
             dbgr("Product created successfully: ", newProduct[0]);
+
+            await cache.delPattern('products:*');
+
             return newProduct[0];
             
         }catch(err){
@@ -42,6 +45,33 @@ class ProductService{
             throw err;
         }finally{
             session.endSession();
+        }
+    }
+
+    async likeProduct(productId, userId){
+        try{
+            dbgr("Liking product in service layer: ", {productId, userId});
+            const product = await productModel.findById(productId);
+            if(!product){
+                dbgr("Product not found with id: ", productId);
+                throw new Error('Product not found');
+            }
+
+            if(product.likes.includes(userId)){
+                dbgr("User has already liked the product: ", userId);
+                product.likes.pull(userId);
+                dbgr("Product unliked: ", product);
+            }else{
+                product.likes.push(userId);
+                dbgr("Product liked: ", product);
+            }
+            
+            await product.save();
+            await cache.delPattern('products:*');
+            return product;
+        }catch(err){
+            dbgr("Error in liking product: ", err);
+            throw err;
         }
     }
 
