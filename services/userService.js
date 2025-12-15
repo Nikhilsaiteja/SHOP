@@ -31,6 +31,10 @@ class UserService{
                 });
                 dbgr('New owner created:', newOwner);
 
+                const cacheKey = `user:${newOwner._id}`;
+                await cache.set(cacheKey, JSON.stringify(newOwner));
+                dbgr('New owner cached with key:', cacheKey);
+
                 return {user: newOwner, token: generateToken({ id: newOwner._id })};
             }
 
@@ -41,6 +45,10 @@ class UserService{
                 ...additionalData
             })
             dbgr('New user created:', newUser);
+
+            const cacheKey = `user:${newUser._id}`;
+            await cache.set(cacheKey, JSON.stringify(newUser));
+            dbgr('New user cached with key:', cacheKey);
 
             return {user: newUser, token: generateToken({ id: newUser._id })};
         } catch (error) {
@@ -68,6 +76,10 @@ class UserService{
             const token = generateToken({ id: user._id });
             dbgr('Generated JWT token for user:', token);
 
+            const cacheKey = `user:${user._id}`;
+            await cache.set(cacheKey, JSON.stringify(user));
+            dbgr('User cached with key:', cacheKey);
+
             return {user, token};
         }catch(error){
             dbgr('Error in loginUser:', error);
@@ -85,7 +97,7 @@ class UserService{
                 throw new Error('User not found');
             }
 
-            await cache.delPattern('users:*');
+            await cache.delPattern('user:*');
 
             dbgr('User deleted successfully:', user);
         }catch(error){

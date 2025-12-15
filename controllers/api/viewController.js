@@ -28,7 +28,8 @@ const showDashboard = async (req,res,next)=>{
         res.status(200).json({
             message: "Dashboard data fetched successfully",
             data: {
-                products
+                products,
+                user: req.user
             },
             success: true,
             timestamp: new Date().toISOString()
