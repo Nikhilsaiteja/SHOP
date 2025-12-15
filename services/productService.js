@@ -10,47 +10,86 @@ const mongoose = require('mongoose');
 class ProductService{
 
     async createProduct(name, ownerId, price, discount, category, images){
-        const session = await mongoose.startSession();
-        try{
-            dbgr('Data received in service layer: ', {name, ownerId, price, discount, category, images});
-            session.startTransaction();
 
-            const owner = await ownerModel.findById(ownerId).session(session);
-            if(!owner){
-                dbgr("Owner not found with id: ", ownerId);
-                throw new Error('Owner not found');
+        if(process.env.NODE_ENV === 'QA' || process.env.NODE_ENV === 'UAT' || process.env.NODE_ENV === 'PROD'){
+            const session = await mongoose.startSession();
+            try{
+                dbgr('Data received in service layer: ', {name, ownerId, price, discount, category, images});
+                session.startTransaction();
+
+                const owner = await ownerModel.findById(ownerId).session(session);
+                if(!owner){
+                    dbgr("Owner not found with id: ", ownerId);
+                    throw new Error('Owner not found');
+                }
+
+                const filepaths = images.map(file => file.path);
+                const imagePaths = filepaths.map(fp => fp.replace(/\\/g, '/').split('public')[1]); 
+                dbgr('Processed image paths:', imagePaths);
+                
+                const newProduct = await productModel.create([{
+                    name,
+                    owner: ownerId,
+                    price,
+                    discount,
+                    category,
+                    images: imagePaths
+                }], { session });
+
+                owner.products.push(newProduct[0]._id);
+                await owner.save({ session });
+
+                await session.commitTransaction();
+                dbgr("Product created successfully: ", newProduct[0]);
+
+                await cache.delPattern('products:*');
+
+                return newProduct[0];
+                
+            }catch(err){
+                dbgr("Error in creating product: ", err);
+                await session.abortTransaction();
+                throw err;
+            }finally{
+                session.endSession();
             }
+        }else{
+            try{
+                dbgr('Data received in service layer: ', {name, ownerId, price, discount, category, images});
 
-            const filepaths = images.map(file => file.path);
-            const imagePaths = filepaths.map(fp => fp.replace(/\\/g, '/').split('public')[1]); 
-            dbgr('Processed image paths:', imagePaths);
-            
-            const newProduct = await productModel.create([{
-                name,
-                owner: ownerId,
-                price,
-                discount,
-                category,
-                images: imagePaths
-            }], { session });
+                const owner = await ownerModel.findById(ownerId);
+                if(!owner){
+                    dbgr("Owner not found with id: ", ownerId);
+                    throw new Error('Owner not found');
+                }
 
-            owner.products.push(newProduct[0]._id);
-            await owner.save({ session });
+                const filepaths = images.map(file => file.path);
+                const imagePaths = filepaths.map(fp => fp.replace(/\\/g, '/').split('public')[1]); 
+                dbgr('Processed image paths:', imagePaths);
+                
+                const newProduct = await productModel.create({
+                    name,
+                    owner: ownerId,
+                    price,
+                    discount,
+                    category,
+                    images: imagePaths
+                });
 
-            await session.commitTransaction();
-            dbgr("Product created successfully: ", newProduct[0]);
+                owner.products.push(newProduct._id);
+                await owner.save();
 
-            await cache.delPattern('products:*');
+                dbgr("Product created successfully: ", newProduct);
+                await cache.delPattern('products:*');
 
-            return newProduct[0];
-            
-        }catch(err){
-            dbgr("Error in creating product: ", err);
-            await session.abortTransaction();
-            throw err;
-        }finally{
-            session.endSession();
+                return newProduct;
+            }catch(err){
+                dbgr("Error in creating product: ", err);
+                throw err;
+            }
         }
+
+        
     }
 
     async likeProduct(productId, userId){

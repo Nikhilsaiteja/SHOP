@@ -5,6 +5,8 @@ const { createProduct, likeProduct } = require('../../../controllers/api/product
 const isLoggedIn = require('../../../middlewares/api/isLoggedIn');
 const { validateProductCreation } = require('../../../middlewares/api/validator');
 
+const upload = require('../../../config/multer-config');
+
 router.use(isLoggedIn);
 
 // test route
@@ -16,7 +18,7 @@ router.get('/test', (req,res)=>{
     })
 });
 
-router.post('/create', validateProductCreation, createProduct);
+router.post('/create', upload.array('images', 5), validateProductCreation, createProduct);
 
 router.post('/like/:productId', likeProduct);
 

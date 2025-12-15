@@ -63,7 +63,14 @@ class Sanitizer{
                 cleanObj[key] = Sanitizer.sanitizeEmail(obj[key]);
             }
             else if(Array.isArray(obj[key])){
-                cleanObj[key] = obj[key].map(item => Sanitizer.sanitizeObject(item));
+                cleanObj[key] = obj[key].map(item => {
+                    if(typeof item === 'string'){
+                        return Sanitizer.sanitizeText(item);
+                    } else if(typeof item === 'object'){
+                        return Sanitizer.sanitizeObject(item);
+                    }
+                    return item;
+                });
             }
             else if(key.toLocaleLowerCase().includes('file') || key.toLocaleLowerCase().includes('image')){
                 cleanObj[key] = Sanitizer.sanitizeFileName(obj[key]);
