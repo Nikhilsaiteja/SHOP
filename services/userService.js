@@ -6,6 +6,8 @@ const generateToken = require('../config/jwt-config');
 
 const dbgr = require('debug')('app:userService');
 
+const cache = require('../utils/redisCache');
+
 class UserService{
 
     async registerUser(name, email, password, role, additionalData = []){
@@ -82,6 +84,8 @@ class UserService{
                 dbgr('No user found with ID:', userId);
                 throw new Error('User not found');
             }
+
+            await cache.delPattern('users:*');
 
             dbgr('User deleted successfully:', user);
         }catch(error){

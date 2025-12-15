@@ -8,7 +8,10 @@ const createProduct = async(req,res,next)=>{
         const { name, price, discount, category } = req.body;
         const ownerId = req.params.ownerId;
 
-        const newProduct = await ProductService.createProduct(name, ownerId, price, discount, category);
+        dbgr("Files received: ", req.files);
+        const images = req.files;
+
+        const newProduct = await ProductService.createProduct(name, ownerId, price, discount, category, images);
         dbgr("Response from service layer: ", newProduct);
         res.status(201).json({
             message: 'Product created successfully',
@@ -22,6 +25,27 @@ const createProduct = async(req,res,next)=>{
     }
 }
 
-module.exports = {
-    createProduct
+const likeProduct = async(req,res,next)=>{
+    try{
+        const productId = req.params.productId;
+        const userId = req.user.id;
+        dbgr("Liking product in controller layer: ", {productId, userId});
+
+        const updatedProduct = await ProductService.likeProduct(productId, userId);
+        dbgr("Response from service layer: ", updatedProduct);
+        res.status(200).json({
+            message: 'Product liked successfully',
+            success: true,
+            product: updatedProduct,
+            timestamp: new Date().toISOString()
+        });
+    }catch(err){
+        dbgr("Error in controller layer while liking product: ", err);
+        next(err);
+    }
 }
+
+module.exports = {
+    createProduct,
+    likeProduct
+};

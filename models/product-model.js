@@ -26,9 +26,19 @@ const productSchema = new mongoose.Schema({
     likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'user'
+            ref: 'user' || 'owner'
         }
-    ]
-})
+    ],
+    images: [
+        {
+            type: String,
+            required: true
+        }
+    ],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
 
 module.exports = mongoose.model('product', productSchema);

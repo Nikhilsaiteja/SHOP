@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { createProduct } = require('../../../controllers/api/productController');
 const isLoggedIn = require('../../../middlewares/api/isLoggedIn');
+const { validateProductCreation } = require('../../../middlewares/api/validator');
 
 router.use(isLoggedIn);
 
@@ -15,6 +16,6 @@ router.get('/test', (req,res)=>{
     })
 });
 
-router.post('/create/:ownerId', createProduct);
+router.post('/create/:ownerId', validateProductCreation, createProduct);
 
 module.exports = router;

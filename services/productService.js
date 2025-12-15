@@ -9,10 +9,10 @@ const mongoose = require('mongoose');
 
 class ProductService{
 
-    async createProduct(name, ownerId, price, discount, category){
+    async createProduct(name, ownerId, price, discount, category, images){
         const session = await mongoose.startSession();
         try{
-            dbgr('Data received in service layer: ', {name, ownerId, price, discount, category});
+            dbgr('Data received in service layer: ', {name, ownerId, price, discount, category, images});
             session.startTransaction();
 
             const owner = await ownerModel.findById(ownerId).session(session);
@@ -20,13 +20,18 @@ class ProductService{
                 dbgr("Owner not found with id: ", ownerId);
                 throw new Error('Owner not found');
             }
+
+            const filepaths = images.map(file => file.path);
+            const imagePaths = filepaths.map(fp => fp.replace(/\\/g, '/').split('public')[1]); 
+            dbgr('Processed image paths:', imagePaths);
             
             const newProduct = await productModel.create([{
                 name,
                 owner: ownerId,
                 price,
                 discount,
-                category
+                category,
+                images: imagePaths
             }], { session });
 
             owner.products.push(newProduct[0]._id);
@@ -34,6 +39,9 @@ class ProductService{
 
             await session.commitTransaction();
             dbgr("Product created successfully: ", newProduct[0]);
+
+            await cache.delPattern('products:*');
+
             return newProduct[0];
             
         }catch(err){
@@ -42,6 +50,33 @@ class ProductService{
             throw err;
         }finally{
             session.endSession();
+        }
+    }
+
+    async likeProduct(productId, userId){
+        try{
+            dbgr("Liking product in service layer: ", {productId, userId});
+            const product = await productModel.findById(productId);
+            if(!product){
+                dbgr("Product not found with id: ", productId);
+                throw new Error('Product not found');
+            }
+
+            if(product.likes.includes(userId)){
+                dbgr("User has already liked the product: ", userId);
+                product.likes.pull(userId);
+                dbgr("Product unliked: ", product);
+            }else{
+                product.likes.push(userId);
+                dbgr("Product liked: ", product);
+            }
+            
+            await product.save();
+            await cache.delPattern('products:*');
+            return product;
+        }catch(err){
+            dbgr("Error in liking product: ", err);
+            throw err;
         }
     }
 
