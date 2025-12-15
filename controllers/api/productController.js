@@ -6,7 +6,7 @@ const createProduct = async(req,res,next)=>{
     try{
         dbgr("Request received in controller layer: ", req.body);
         const { name, price, discount, category } = req.body;
-        const ownerId = req.params.ownerId;
+        const ownerId = req.user._id;
 
         dbgr("Files received: ", req.files);
         const images = req.files;
@@ -28,7 +28,7 @@ const createProduct = async(req,res,next)=>{
 const likeProduct = async(req,res,next)=>{
     try{
         const productId = req.params.productId;
-        const userId = req.user.id;
+        const userId = req.user._id;
         dbgr("Liking product in controller layer: ", {productId, userId});
 
         const updatedProduct = await ProductService.likeProduct(productId, userId);
