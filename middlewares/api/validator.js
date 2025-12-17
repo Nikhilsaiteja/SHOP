@@ -166,9 +166,12 @@ const validateProductCreation=(req,res,next)=>{
             });
         }
 
-        // req.files = req.files.map(file=> {
-        //     return Sanitizer.sanitizeFileName(file.originalname);
-        // })
+        req.files = req.files.map(file=> {
+            return {
+                ...file,
+                originalname: Sanitizer.sanitizeFileName(file.originalname)
+            }
+        })
 
         const filesSchema = joi.object({
             images: joi.array()
