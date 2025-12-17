@@ -6,7 +6,7 @@ const filterBy = async  (req,res,next)=>{
     try{
         const filter = req.params.filter;
         dbgr('Filter by:', filter);
-        const products = await DashboardService.getDashboardData(filter);
+        const products = await DashboardService.getDashboardDataByFilter(filter);
         res.status(200).json({
             message: `Filtering by ${filter} - functionality not yet implemented`,
             products,
