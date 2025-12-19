@@ -3,10 +3,10 @@ const router = express.Router();
 
 const userRoute = require('./web/userRoute');
 const productRoute = require('./web/productRoute');
-const ownerRoute = require('./web/ownerRoute');
+const dashboardRoute = require('./web/dashboardRoute');
 
 router.use('/user', userRoute);
 router.use('/product', productRoute);
-router.use('/owner', ownerRoute);
+router.use('/dashboard', dashboardRoute);
 
 module.exports = router;
