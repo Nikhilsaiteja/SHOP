@@ -21,8 +21,13 @@ require('dotenv').config();
 require('./config/mongoose-config')();
 const redisClient = require('./config/redis-config');
 
-app.use(express.json({limit: '50kb'}));
-app.use(express.urlencoded({extended: true, limit: '50kb'}));
+app.set('view engine', 'ejs');
+const path = require('path');
+
+app.use(express.json({limit: '10mb'}));
+app.use(express.urlencoded({extended: true, limit: '10mb'}));
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 // for web routes
 app.use('/', require('./routes/index'));
