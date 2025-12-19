@@ -16,8 +16,36 @@
         <% if(error.length > 0) { %>
             <div id="error" class="text-red-500"><%= error %></div>
         <% } %>
+        <div class="flex flex-row gap-8 text-blue-400">
+            <a>create product</a>
+            <a>cart</a>
+            <a>profile</a>
+        </div>
     </div>
-    <h2>Dashboard</h2>
+    <div>
+        <div class="w-[18rem] flex flex-col gap-8 mt-8">
+            <div>
+                <label for="filter" class="font-bold text-blue-400">Filter By:</label>
+                <select id="filter" name="filter" class="border border-gray-300 rounded p-2">
+                    <option value="all">All Products</option>
+                    <option value="category1">Category 1</option>
+                    <option value="category2">Category 2</option>
+                    <option value="category3">Category 3</option>
+                </select>
+            </div>
+            <div class="flex flex-col gap-2 mr-[7rem] text-blue-400 font-bold">
+                <input type="button" name="filter" value="discounted">
+                <input type="button" name="filter" value="popular">
+            </div>
+            <div class="flex flex-col gap-2 mr-[7rem] text-blue-400 font-bold">
+                <input type="button" name="filter" value="clothes">
+                <input type="button" name="filter" value="electronics">
+                <input type="button" name="filter" value="home">
+                <input type="button" name="filter" value="shoes">
+                <input type="button" name="filter" value="accessories">
+            </div>
+        </div>
+    </div>
     <script src="/javascripts/flashScript.js"></script>
 </body>
 </html>
