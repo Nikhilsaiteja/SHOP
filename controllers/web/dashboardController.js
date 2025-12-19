@@ -11,7 +11,7 @@ const filterBy = async  (req,res,next)=>{
         res.redirect('/dashboard');
     }catch(error){
         dbgr('Error in filterBy controller:', error);
-        req.flash('error', 'Error applying filter');
+        req.flash('error', error.message || 'Error filtering dashboard');
         res.redirect('/dashboard');
     }
 }

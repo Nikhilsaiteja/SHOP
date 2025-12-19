@@ -5,7 +5,7 @@ const { createProduct, likeProduct } = require('../../controllers/web/productCon
 const isLoggedIn = require('../../middlewares/web/isLoggedIn');
 const { validateProductCreation } = require('../../middlewares/web/validator');
 
-const upload = require('../../../config/multer-config');
+const upload = require('../../config/multer-config');
 
 router.use(isLoggedIn);
 

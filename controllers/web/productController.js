@@ -17,7 +17,7 @@ const createProduct = async(req,res,next)=>{
         res.redirect('/dashboard');
     }catch(err){
         dbgr("Error in controller layer while creating product: ", err);
-        req.flash('error', 'Error creating product');
+        req.flash('error', err.message || 'Error creating product');
         res.redirect('/create-product');
     }
 }
@@ -34,7 +34,7 @@ const likeProduct = async(req,res,next)=>{
         res.redirect('/dashboard');
     }catch(err){
         dbgr("Error in controller layer while liking product: ", err);
-        req.flash('error', 'Error liking product');
+        req.flash('error', err.message || 'Error liking product');
         res.redirect('/dashboard');
     }
 }

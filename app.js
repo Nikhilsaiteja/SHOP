@@ -36,7 +36,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 5 // 5 minutes
+        maxAge: process.env.SESSION_COOKIE_MAX_AGE
     }
 }));
 app.use(flash());

@@ -17,8 +17,8 @@ const registerUser = async (req,res,next)=>{
         res.redirect('/dashboard');
     }catch(error){
         dbgr('Error in registerUser controller:', error);
-        req.flash('error', 'Error registering user');
-        res.redirect('/registration');
+        req.flash('error', error.message || 'Error registering user');
+        res.redirect('/user/registration');
     }
 }
 
@@ -37,8 +37,8 @@ const loginUser = async (req,res,next)=>{
         res.redirect('/dashboard');
     }catch(error){
         dbgr('Error in loginUser controller:', error);
-        req.flash('error', 'Error logging in user');
-        res.redirect('/login');
+        req.flash('error', error.message || 'Error logging in user');
+        res.redirect('/user/login');
     }
 }
 
@@ -53,7 +53,7 @@ const logoutUser = async (req,res,next)=>{
         res.redirect('/login');
     }catch(error){
         dbgr('Error in logoutUser controller:', error);
-        req.flash('error', 'Error logging out user');
+        req.flash('error', error.message || 'Error logging out user');
         res.redirect('/dashboard');
     }
 }
@@ -66,10 +66,10 @@ const deleteUser = async (req,res,next)=>{
         await UserService.deleteUser(userId);
 
         req.flash('success', 'User deleted successfully');
-        res.redirect('/registration');
+        res.redirect('/user/registration');
     }catch(error){
         dbgr('Error in deleteUser controller:', error);
-        req.flash('error', 'Error deleting user');
+        req.flash('error', error.message || 'Error deleting user');
         res.redirect('/dashboard');
     }
 }

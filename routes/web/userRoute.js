@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { validateUserRegisteration, validateUserLogin } = require('../../middlewares/web/validator');
 const { registerUser, loginUser, logoutUser, deleteUser } = require('../../controllers/web/userController');
-const {  showRegisterPage } = require('../../controllers/web/viewController');
+const {  showRegisterPage, showLoginPage } = require('../../controllers/web/viewController');
 
 // test route
 router.get('/test', (req,res)=>{
@@ -19,5 +19,7 @@ router.post('/logout/:id', logoutUser);
 router.delete('/delete/:id', deleteUser);
 
 router.get('/registration', showRegisterPage);
+
+router.get('/login', showLoginPage);
 
 module.exports = router;

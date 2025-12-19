@@ -12,13 +12,15 @@ const isLoggedIn = async (req,res,next)=>{
         dbgr('Token from cookies: ', token);
         if(!token){
             dbgr('No token found, user is not logged in');
-            return next(new Error('User not logged in'));
+            req.flash('error', 'You must be logged in to access this page');
+            return res.redirect('/user/login');
         }
 
         const data = jwt.verify(token, process.env.JWT_SECRET);
         if(!data || !data.id){
             dbgr('Invalid token data: ', data);
-            return next(new Error('User not logged in'));
+            req.flash('error', 'You must be logged in to access this page');
+            return res.redirect('/user/login');
         }
 
         const cacheKey = `user:${data.id}`;
@@ -34,7 +36,8 @@ const isLoggedIn = async (req,res,next)=>{
             const user = await userModel.findById(data.id);
             if(!user){
                 dbgr('User not found in DB with id: ', data.id);
-                return next(new Error('User not logged in'));
+                req.flash('error', 'User no longer exists, please log in again');
+                return res.redirect('/user/login');
             }
             await cache.set(cacheKey, JSON.stringify(user));
             req.user = user;
@@ -43,7 +46,8 @@ const isLoggedIn = async (req,res,next)=>{
         }
     }catch(err){
         dbgr('isLoggedIn middleware error: ', err);
-        next(err);
+        req.flash('error', 'An error occurred, please log in again');
+        return res.redirect('/user/login');
     }
 }
 

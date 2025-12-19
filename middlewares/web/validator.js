@@ -9,7 +9,7 @@ const validateUserRegisteration=(req,res,next)=>{
 
     if(!req.body){
         req.flash('error', 'Request body is missing');
-        return res.redirect('/registration');
+        return res.redirect('/user/registration');
     }
 
     req.body = Sanitizer.sanitizeObject(req.body);
@@ -44,8 +44,8 @@ const validateUserRegisteration=(req,res,next)=>{
 
     if(error){
         dbgr('Validation errors:', error.details);
-        req.flash('error', 'Validation error');
-        return res.redirect('/registration');
+        req.flash('error', error.details.map(detail=>detail.message).join(', ') || 'Validation error');
+        return res.redirect('/user/registration');
     }
 
     dbgr('Validated data:', value);
@@ -61,7 +61,7 @@ const validateUserLogin=(req,res,next)=>{
 
     if(!req.body){
         req.flash('error', 'Request body is missing');
-        return res.redirect('/login');
+        return res.redirect('/user/login');
     }
 
     req.body = Sanitizer.sanitizeObject(req.body);
@@ -82,8 +82,8 @@ const validateUserLogin=(req,res,next)=>{
 
     if(error){
         dbgr('Validation errors:', error.details);
-        req.flash('error', 'Validation error');
-        return res.redirect('/login');
+        req.flash('error', error.details.map(detail=>detail.message).join(', ') || 'Validation error');
+        return res.redirect('/user/login');
     }
 
     dbgr('Validated data:', value);
@@ -129,7 +129,7 @@ const validateProductCreation=(req,res,next)=>{
 
         if(error){
             dbgr('Validation errors:', error.details);
-            req.flash('error', 'Validation error');
+            req.flash('error', error.details.map(detail=>detail.message).join(', ') || 'Validation error');
             return res.redirect('/create-product');
         }
 
@@ -167,7 +167,7 @@ const validateProductCreation=(req,res,next)=>{
 
         if(filesError){
             dbgr('File validation errors:', filesError.details);
-            req.flash('error', 'File validation errors');
+            req.flash('error', filesError.details.map(detail=>detail.message).join(', ') || 'File validation error');
             return res.redirect('/create-product');
         }
 
