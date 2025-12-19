@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Page</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+    <div class="flex flex-row justify-between">
+        <h2 class="text-blue-400 font-bold text-2xl">SHOP</h2>
+        <% if(success.length > 0) { %>
+            <div id="success" class="text-green-500"><%= success %></div>
+        <% } %>
+        <% if(error.length > 0) { %>
+            <div id="error" class="text-red-500"><%= error %></div>
+        <% } %>
+    </div>
+    <h2>Dashboard</h2>
+</body>
+</html>

@@ -29,6 +29,18 @@ app.use(express.urlencoded({extended: true, limit: '10mb'}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+const session = require('express-session');
+const flash = require('connect-flash');
+app.use(session({
+    secret: process.env.SESSSION_SECRET || 'defaultsecret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: process.env.SESSION_COOKIE_MAX_AGE
+    }
+}));
+app.use(flash());
+
 // for web routes
 app.use('/', require('./routes/index'));
 

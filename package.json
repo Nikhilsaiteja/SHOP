@@ -28,6 +28,7 @@
   "homepage": "https://github.com/Nikhilsaiteja/SHOP#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -36,6 +37,7 @@
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
+    "express-session": "^1.18.2",
     "joi": "^18.0.2",
     "jsdom": "^27.2.0",
     "jsonwebtoken": "^9.0.3",
