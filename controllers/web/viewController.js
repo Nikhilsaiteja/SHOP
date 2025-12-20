@@ -46,8 +46,22 @@ const showDashboard = async (req,res,next)=>{
     }
 }
 
+const showCreateProductPage = async (req,res,next)=>{
+    try{
+        dbgr("Rendering create product page");
+        const success = req.flash('success');
+        const error = req.flash('error');
+        res.render('createProductPage', {success, error});
+    }catch(err){
+        dbgr("Error in showCreateProductPage: ", err);
+        req.flash('error', err.message || 'Error loading create product page');
+        res.redirect('/dashboard');
+    }
+}
+
 module.exports = {
     showRegisterPage,
     showLoginPage,
-    showDashboard
+    showDashboard,
+    showCreateProductPage
 }
