@@ -18,14 +18,18 @@ class DashboardService {
             }   
 
             let products;
-            if(filter == 'new'){
-                products = await (await productModel.find({})).reverse();
+            if(filter){
+                products = await productModel.find({ $text: { $search: filter } });
+                dbgr('Fetched products (search):', products);
+            }
+            else if(filter == 'new'){
+                products = await (await productModel.find({}));
                 dbgr('Fetched products (new):', products);
 
                 await cache.set(cacheKey, JSON.stringify(products));
             }
             else if(filter == 'old'){
-                products = await productModel.find({});
+                products = (await productModel.find({})).reverse();
                 dbgr('Fetched products (old):', products);
 
                 await cache.set(cacheKey, JSON.stringify(products));
