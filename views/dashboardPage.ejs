@@ -16,7 +16,63 @@
         <% if(error.length > 0) { %>
             <div id="error" class="text-red-500"><%= error %></div>
         <% } %>
+        <div class="flex flex-row gap-8 text-blue-400">
+            <a>create product</a>
+            <a>cart</a>
+            <a>profile</a>
+        </div>
     </div>
-    <h2>Dashboard</h2>
+    <div class="flex flex-row gap-[5rem]">
+        <div class="w-[18rem] flex flex-col gap-[5rem] p-[2rem] mt-[2rem]">
+            <div>
+                <label for="filter" class="text-blue-400">Filter By:</label>
+                <select id="filter" name="filter" class="border border-gray-300 rounded p-2">
+                    <option value="all">All Products</option>
+                    <option value="category1">Category 1</option>
+                    <option value="category2">Category 2</option>
+                    <option value="category3">Category 3</option>
+                </select>
+            </div>
+            <div class="flex flex-col gap-[2rem] mr-[7rem] text-blue-400">
+                <input type="button" name="filter" value="discounted">
+                <input type="button" name="filter" value="popular">
+            </div>
+            <div class="flex flex-col gap-[2rem] mr-[7rem] text-blue-400">
+                <input type="button" name="filter" value="clothes">
+                <input type="button" name="filter" value="electronics">
+                <input type="button" name="filter" value="home">
+                <input type="button" name="filter" value="shoes">
+                <input type="button" name="filter" value="accessories">
+            </div>
+        </div>
+        <div>
+            <div>
+                <input type="text" placeholder="Search products..." class="border border-gray-500 rounded p-2 w-[36rem] mb-[2rem] px-2 outline-none">
+            </div>
+            <div class="grid grid-cols-4 gap-[3rem] mt-[1rem]">
+                <% if(products.length>0){ %>
+                    <% products.forEach((product)=> { %>
+                        <div class="w-[18rem] h-[22rem] border border-blue-400 items-center content-center p-[1rem] rounded">
+                            <iframe src="https://via.placeholder.com/150" class="w-[16rem] h-[16rem] rounded"></iframe>
+                            <div class="flex flex-row justify-between mt-[1rem]">
+                                <h3><%= product.name %></h3>
+                                <div class="flex flex-row gap-[0.5rem]">
+                                    <button>❤️</button>
+                                    <button>🛒</button>
+                                </div>
+                            </div>
+                            <div class="mt-[0.5rem] flex flex-row justify-between">
+                                <p><%= product.price %></p>
+                                <p><%= product.discount %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% }else{ %>
+                    <h2>No Products Available</h2>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <script src="/javascripts/flashScript.js"></script>
 </body>
 </html>
