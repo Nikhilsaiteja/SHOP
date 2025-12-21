@@ -43,7 +43,7 @@ const addToCart = async(req,res,next)=>{
         const productId = req.params.productId;
         const user = req.user;
         dbgr("Adding to cart in controller layer: ", {productId, user});
-        const updatedUser = await ProductService.addToCart(user, productId);
+        const updatedUser = await ProductService.addToCart(productId, user);
         dbgr("Response from service layer: ", updatedUser);
         req.flash('success', 'Product added to cart successfully');
         res.redirect('/dashboard');

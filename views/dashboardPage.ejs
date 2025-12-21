@@ -18,7 +18,7 @@
         <% } %>
         <div class="flex flex-row gap-8 text-blue-400">
             <button>
-                <a href="/dashboard/creation">create product</a>
+                <a href="/dashboard/creation"><%=  user.role === 'owner' ? 'create product' : '' %></a>
             </button>
             <button>
                 <a href="/dashboard/cart">cart (<%= user.cart.length %>)</a>

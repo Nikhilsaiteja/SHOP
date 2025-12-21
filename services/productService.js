@@ -1,12 +1,12 @@
 const productModel = require('../models/product-model');
 const ownerModel = require('../models/owner-model');
+const userModel = require('../models/user-model');
 
 const dbgr = require('debug')('app:services:productService');
 
 const cache = require('../utils/redisCache');
 
 const mongoose = require('mongoose');
-const userModel = require('../models/user-model');
 
 class ProductService{
 
@@ -129,6 +129,7 @@ class ProductService{
                 return JSON.parse(cacheProducts);
             }
 
+            dbgr("Fetching products from database");
             const products = await productModel.find({});
             dbgr("Fetched products: ", products);
 
@@ -140,14 +141,16 @@ class ProductService{
         }
     }
 
-    async addToCart(user, productId){
+    async addToCart(productId, user){
         try{
             dbgr("Adding to cart in service layer: ", {user, productId});
             const product = await productModel.findById(productId);
+            dbgr("Fetched product: ", product);
             if(!product){
                 dbgr("Product not found with id: ", productId);
                 throw new Error('Product not found');
             }
+            user = await userModel.findById(user._id) || await ownerModel.findById(user._id);
             const userProducts = user.cart.map(item => item.productId.toString());
             dbgr("User's current cart products: ", userProducts);
             if(userProducts.includes(productId)){
@@ -157,6 +160,10 @@ class ProductService{
             user.cart.push({ productId, quantity: 1 });
             await user.save();
             dbgr("Product added to cart: ", user);
+
+            await cache.delPattern(`cart:*`);
+            await cache.delPattern('user:*');
+
             return user;
         }catch(err){
             dbgr("Error in adding to cart: ", err);

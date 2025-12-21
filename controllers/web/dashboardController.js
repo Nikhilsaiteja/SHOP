@@ -6,12 +6,13 @@ const filterBy = async  (req,res,next)=>{
     try{
         const { filter } = req.body;
         dbgr('Filter by:', filter);
+        const user = req.user;
         const products = await DashboardService.getDashboardDataByFilter(filter);
         req.flash('success', `Filtered by ${filter} successfully`);
         const success = req.flash('success');
         const error = req.flash('error');
         dbgr(`products after filtering by ${filter}:`, products);
-        res.render('dashboardPage', {products, success, error, filter});
+        res.render('dashboardPage', {products, user, success, error});
     }catch(error){
         dbgr('Error in filterBy controller:', error);
         req.flash('error', error.message || 'Error filtering dashboard');
