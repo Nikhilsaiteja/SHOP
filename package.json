@@ -5,12 +5,16 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cross-env NODE_ENV=development nodemon app.js",
-    "dev:debug": "NODE_ENV=development DEBUG=app:* nodemon app.js",
+
+    "dev": "cross-env NODE_ENV=dev nodemon app.js",
+    "dev:debug": "cross-env NODE_ENV=dev DEBUG=app:* nodemon app.js",
+
     "qa": "cross-env NODE_ENV=qa node app.js",
     "qa:debug": "cross-env NODE_ENV=qa DEBUG=app:* node app.js",
+
     "uat": "cross-env NODE_ENV=uat node app.js",
     "uat:debug": "cross-env NODE_ENV=uat DEBUG=app:* node app.js",
+    
     "start": "cross-env NODE_ENV=production node app.js",
     "prod:debug": "cross-env NODE_ENV=production DEBUG=app:* node app.js"
   },

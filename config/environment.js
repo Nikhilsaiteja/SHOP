@@ -1,9 +1,7 @@
 const path = require('path');
 
-const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
+const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
 require('dotenv').config({path: path.resolve(process.cwd(), envFile)});
-
-require('dotenv').config();
 
 const config={
 
@@ -20,11 +18,7 @@ const config={
         expiresIn: process.env.JWT_EXPIRES_IN || '7d'
     },
 
-    logging: {
-        level: process.env.LOG_LEVEL,
-        debug: process.env.DEBUG
-    },
-
+    isLocal: process.env.NODE_ENV === 'local',
     isDevelopment: process.env.NODE_ENV === 'development',
     isQA: process.env.NODE_ENV === 'qa',
     isUAT: process.env.NODE_ENV === 'uat',
@@ -32,6 +26,7 @@ const config={
 
     security: {
         cors: {
+            local: ['http://localhost:3000'],
             development: ['http://localhost:3000'],
             qa: ['http://shop_qa.com'],
             uat: ['http://shop_uat.com'],

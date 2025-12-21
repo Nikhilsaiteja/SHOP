@@ -3,13 +3,13 @@ const client = require('../config/redis-config');
 const dbgr = require('debug')('app:redis-cache');
 
 const DEFAULT_EXPIRY = process.env.REDIS_TTL || 3600; // in seconds
+dbgr(`Redis current status: ENABLED = ${process.env.REDIS_ENABLED}`);
 const Redis = process.env.REDIS_ENABLED;
 
 class RedisCache{
 
     async get(key){
         try{
-            dbgr('Redis ENABLED value in get:', Redis);
             if(Redis!=='true') return null;
             const value = await client.get(key);
             if(value){
@@ -26,7 +26,6 @@ class RedisCache{
 
     async set(key,value,ttl=DEFAULT_EXPIRY){
         try{
-            dbgr('Redis ENABLED value in set:', Redis);
             if(Redis!=='true') return false;
             await client.set(key, JSON.stringify(value), ttl);
             dbgr('Cache set for key:', key, 'with TTL:', ttl);
@@ -38,7 +37,6 @@ class RedisCache{
 
     async del(key){
         try{
-            dbgr('Redis ENABLED value in del:', Redis);
             if(Redis!=='true') return null;
             await client.del(key);
             dbgr('Cache deleted for key:', key);
@@ -49,7 +47,6 @@ class RedisCache{
 
     async delPattern(pattern){
         try{
-            dbgr('Redis ENABLED value in delPattern:', Redis);
             if(Redis!=='true') return null;
             const keys = await client.keys(pattern);
             if(keys.length == 0){
@@ -66,7 +63,6 @@ class RedisCache{
 
     async flushAll(){
         try{
-            dbgr('Redis ENABLED value in flushAll:', Redis);
             if(Redis!=='true') return null;
             await client.flushAll();
             dbgr('All cache flushed');
