@@ -35,11 +35,10 @@ const showLoginPage = async (req,res,next)=>{
 const showDashboard = async (req,res,next)=>{
     try{
         dbgr("Rendering dashboard page");
-        const filter = req.params.filter || 'all';
         const products = await productService.getAllProducts();
         const success = req.flash('success');
         const error = req.flash('error');
-        res.render('dashboardPage', {products, success, error, filter});
+        res.render('dashboardPage', {products, success, error});
     }catch(err){
         dbgr("Error in showDashboard: ", err);
         req.flash('error', err.message || 'Error loading dashboard');

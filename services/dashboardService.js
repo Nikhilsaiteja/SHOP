@@ -18,11 +18,8 @@ class DashboardService {
             }   
 
             let products;
-            if(filter){
-                products = await productModel.find({ $text: { $search: filter } });
-                dbgr('Fetched products (search):', products);
-            }
-            else if(filter == 'new'){
+            
+            if(filter == 'new'){
                 products = await (await productModel.find({}));
                 dbgr('Fetched products (new):', products);
 
@@ -41,7 +38,7 @@ class DashboardService {
                 await cache.set(cacheKey, JSON.stringify(products));
             }
             else if(filter == 'popular'){
-                products = await productModel.find({}).sort({ likes: -1 });
+                products = (await productModel.find({})).sort((a,b)=> a.likes.length - b.likes.length);
                 dbgr('Fetched products (popular):', products);
 
                 await cache.set(cacheKey, JSON.stringify(products));
@@ -56,6 +53,28 @@ class DashboardService {
         }catch(error){
             dbgr('Error in getDashboardData:', error);
             throw new Error('Error fetching dashboard data: ' + error.message);
+        }
+    }
+
+    async getDashboardDataBySearch(searchText){
+        try{
+            dbgr('Fetching dashboard data with search text:', searchText);
+
+            const cacheKey = `products:search:${searchText}`;
+            const cachedData = await cache.get(cacheKey);
+
+            if(cachedData){
+                dbgr('Returning cached data for search text:', searchText);
+                return JSON.parse(cachedData);
+            }
+
+            const products = await productModel.find({ $text: { $search: searchText } });
+            dbgr('Fetched products (search):', products);
+            await cache.set(cacheKey, JSON.stringify(products));
+            return products;
+        }catch(error){
+            dbgr('Error in getDashboardDataBySearch:', error);
+            throw new Error('Error fetching dashboard data by search: ' + error.message);
         }
     }
 

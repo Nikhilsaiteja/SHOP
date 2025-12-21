@@ -30,7 +30,6 @@ const likeProduct = async(req,res,next)=>{
 
         const updatedProduct = await ProductService.likeProduct(productId, userId);
         dbgr("Response from service layer: ", updatedProduct);
-        req.flash('success', 'Product liked successfully');
         res.redirect('/dashboard');
     }catch(err){
         dbgr("Error in controller layer while liking product: ", err);
@@ -39,7 +38,24 @@ const likeProduct = async(req,res,next)=>{
     }
 }
 
+const addToCart = async(req,res,next)=>{
+    try{
+        const productId = req.params.productId;
+        const user = req.user;
+        dbgr("Adding to cart in controller layer: ", {productId, user});
+        const updatedUser = await ProductService.addToCart(user, productId);
+        dbgr("Response from service layer: ", updatedUser);
+        req.flash('success', 'Product added to cart successfully');
+        res.redirect('/dashboard');
+    }catch(err){
+        dbgr("Error in controller layer while adding to cart: ", err);
+        req.flash('error', err.message || 'Error adding to cart');
+        res.redirect('/dashboard');
+    }
+}
+
 module.exports = {
     createProduct,
-    likeProduct
+    likeProduct,
+    addToCart
 };

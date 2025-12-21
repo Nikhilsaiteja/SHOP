@@ -57,26 +57,32 @@
             </form>
         </div>
         <div>
-            <form method="post" action="/dashboard/filter">
+            <form method="post" action="/dashboard/search">
                 <div>
-                    <input type="text" name="filter" placeholder="Search products..." class="border border-gray-500 rounded p-2 w-[36rem] mb-[2rem] px-2 outline-none" onchange="this.form.submit()">
+                    <input type="text" name="searchText" placeholder="Search products..." class="border border-gray-500 rounded p-2 w-[36rem] mb-[2rem] px-2 outline-none" onchange="this.form.submit()">
                 </div>
             </form>
             <div class="grid grid-cols-4 gap-[3rem] mt-[1rem]">
                 <% if(products.length>0){ %>
                     <% products.reverse().forEach((product)=> { %>
-                        <div class="w-[18rem] h-[22rem] border border-blue-400 items-center content-center p-[1rem] rounded">
-                            <iframe src="https://via.placeholder.com/150" class="w-[16rem] h-[16rem] rounded"></iframe>
-                            <div class="flex flex-row justify-between mt-[1rem]">
-                                <h3><%= product.name %></h3>
-                                <div class="flex flex-row gap-[0.5rem]">
-                                    <button>❤️</button>
-                                    <button>🛒</button>
-                                </div>
+                        <div class="w-[16rem] h-[21rem] border-2 border-blue-300 hover:shadow-lg hover:scale-105 transition-transform duration-200 rounded-md">
+                            <div class="content-center flex flex-col items-center gap-4 p-2 rounded-md">
+                                <img class="w-[15rem] h-[16rem] rounded-md bg-grey-500" src="<%= product.images[0] %>">
                             </div>
-                            <div class="mt-[0.5rem] flex flex-row justify-between">
-                                <p><%= product.price %></p>
-                                <p><%= product.discount %></p>
+                            <div>
+                                <div class="block ml-2 mr-2 flex flex-row justify-between">
+                                    <p><%= product.name %></p>
+                                    <div>
+                                        <a href="/product/like/<%= product._id %>"><%= product.likes.length %>❤️</a>
+                                        <a href="/product/cart/<%= product._id %>">🛒</a>
+                                    </div>
+                                </div>
+                                <div class="block ml-2 mr-2 mt-1 text-sm flex flex-row justify-between">
+                                    <p><%= product.price %>/-</p>
+                                    <% if(product.discount>0){ %>
+                                        <p class="text-green-500">-<%= product.discount %>/-</p>
+                                    <% } %>
+                                </div>
                             </div>
                         </div>
                     <% }) %>

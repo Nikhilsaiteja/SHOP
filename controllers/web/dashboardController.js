@@ -19,6 +19,24 @@ const filterBy = async  (req,res,next)=>{
     }
 }
 
+const searchBy = async (req,res,next)=>{
+    try{
+        const { searchText } = req.body;
+        dbgr('Search by:', searchText);
+        const products = await DashboardService.getDashboardDataBySearch(searchText);
+        req.flash('success', `Searched for ${searchText} successfully`);
+        const success = req.flash('success');
+        const error = req.flash('error');
+        dbgr(`products after searching for ${searchText}:`, products);
+        res.render('dashboardPage', {products, success, error});
+    }catch(error){
+        dbgr('Error in searchBy controller:', error);
+        req.flash('error', error.message || 'Error searching dashboard');
+        res.redirect('/dashboard');
+    }
+}
+
 module.exports = {
-    filterBy
+    filterBy,
+    searchBy
 }
