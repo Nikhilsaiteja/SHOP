@@ -17,7 +17,6 @@ app.use(cors({
     credentials: true
 }))
 
-require('dotenv').config();
 require('./config/mongoose-config')();
 const redisClient = require('./config/redis-config');
 
@@ -52,7 +51,8 @@ app.use(errorHandler);
 app.listen(config.port, ()=>{
     dbgr(`
 Environment: ${config.env},
-App URL: ${config.appUrl}  
+App URL: ${config.appUrl},
+MongoDB URI: ${config.database.uri}  
         `);
     dbgr(`Server is running on port ${config.port}`);
 });
