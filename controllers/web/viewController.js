@@ -35,10 +35,11 @@ const showLoginPage = async (req,res,next)=>{
 const showDashboard = async (req,res,next)=>{
     try{
         dbgr("Rendering dashboard page");
+        const user = req.user;
         const products = await productService.getAllProducts();
         const success = req.flash('success');
         const error = req.flash('error');
-        res.render('dashboardPage', {products, success, error});
+        res.render('dashboardPage', {products, user, success, error});
     }catch(err){
         dbgr("Error in showDashboard: ", err);
         req.flash('error', err.message || 'Error loading dashboard');
@@ -59,9 +60,28 @@ const showCreateProductPage = async (req,res,next)=>{
     }
 }
 
+const showCartPage = async (req,res,next)=>{
+    try{
+        dbgr("Rendering cart page");
+        const user = req.user;
+        const cart = user.cart;
+        dbgr("Cart Products: ", cart);
+        const cartProducts = await Promise.all(cart.map( item => productModel.findById(item.productId) ));
+        dbgr("Fetched Products: ", cartProducts);
+        const success = req.flash('success');
+        const error = req.flash('error');
+        res.render('cartPage', {cartProducts, user, success, error});
+    }catch(err){
+        dbgr("Error in showCartPage: ", err);
+        req.flash('error', err.message || 'Error loading cart page');
+        res.redirect('/dashboard');
+    }
+}
+
 module.exports = {
     showRegisterPage,
     showLoginPage,
     showDashboard,
-    showCreateProductPage
+    showCreateProductPage,
+    showCartPage
 }
