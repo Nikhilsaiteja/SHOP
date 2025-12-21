@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { createProduct, likeProduct } = require('../../controllers/web/productController');
+const { createProduct, likeProduct, addToCart } = require('../../controllers/web/productController');
 const isLoggedIn = require('../../middlewares/web/isLoggedIn');
 const { validateProductCreation } = require('../../middlewares/web/validator');
 
@@ -16,6 +16,8 @@ router.get('/test', (req,res)=>{
 
 router.post('/create', upload.array('images', 5), validateProductCreation, createProduct);
 
-router.post('/like/:productId', likeProduct);
+router.get('/like/:productId', likeProduct);
+
+router.get('/cart/:productId', addToCart);
 
 module.exports = router;

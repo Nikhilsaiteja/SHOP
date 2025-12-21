@@ -6,6 +6,7 @@ const dbgr = require('debug')('app:services:productService');
 const cache = require('../utils/redisCache');
 
 const mongoose = require('mongoose');
+const userModel = require('../models/user-model');
 
 class ProductService{
 
@@ -135,6 +136,30 @@ class ProductService{
             return products;
         }catch(err){
             dbgr("Error in fetching products: ", err);
+            throw err;
+        }
+    }
+
+    async addToCart(user, productId){
+        try{
+            dbgr("Adding to cart in service layer: ", {user, productId});
+            const product = await productModel.findById(productId);
+            if(!product){
+                dbgr("Product not found with id: ", productId);
+                throw new Error('Product not found');
+            }
+            const userProducts = user.cart.map(item => item.productId.toString());
+            dbgr("User's current cart products: ", userProducts);
+            if(userProducts.includes(productId)){
+                dbgr("Product already in cart: ", productId);
+                return user;
+            }
+            user.cart.push({ productId, quantity: 1 });
+            await user.save();
+            dbgr("Product added to cart: ", user);
+            return user;
+        }catch(err){
+            dbgr("Error in adding to cart: ", err);
             throw err;
         }
     }

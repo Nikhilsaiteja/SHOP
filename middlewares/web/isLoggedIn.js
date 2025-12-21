@@ -4,6 +4,7 @@ const dbgr = require('debug')('app:isLoggedIn');
 
 const cache = require('../../utils/redisCache');
 const userModel = require('../../models/user-model');
+const ownerModel = require('../../models/owner-model');
 
 const isLoggedIn = async (req,res,next)=>{
     try{
@@ -33,7 +34,7 @@ const isLoggedIn = async (req,res,next)=>{
             return next();
         }else{
             dbgr('User not found in cache, fetching from DB');
-            const user = await userModel.findById(data.id);
+            const user = await userModel.findById(data.id) || await ownerModel.findById(data.id);
             if(!user){
                 dbgr('User not found in DB with id: ', data.id);
                 req.flash('error', 'User no longer exists, please log in again');
