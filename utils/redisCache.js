@@ -3,13 +3,14 @@ const client = require('../config/redis-config');
 const dbgr = require('debug')('app:redis-cache');
 
 const DEFAULT_EXPIRY = process.env.REDIS_TTL || 3600; // in seconds
-const REDIS_ENABLED = process.env.REDIS_ENABLED === 'true';
+const Redis = process.env.REDIS_ENABLED;
 
 class RedisCache{
 
     async get(key){
         try{
-            if(!REDIS_ENABLED) return null;
+            dbgr('Redis ENABLED value in get:', Redis);
+            if(Redis!=='true') return null;
             const value = await client.get(key);
             if(value){
                 dbgr('Cache hit for key:', key);
@@ -25,7 +26,8 @@ class RedisCache{
 
     async set(key,value,ttl=DEFAULT_EXPIRY){
         try{
-            if(!REDIS_ENABLED) return null;
+            dbgr('Redis ENABLED value in set:', Redis);
+            if(Redis!=='true') return false;
             await client.set(key, JSON.stringify(value), ttl);
             dbgr('Cache set for key:', key, 'with TTL:', ttl);
             return true;
@@ -36,7 +38,8 @@ class RedisCache{
 
     async del(key){
         try{
-            if(!REDIS_ENABLED) return null;
+            dbgr('Redis ENABLED value in del:', Redis);
+            if(Redis!=='true') return null;
             await client.del(key);
             dbgr('Cache deleted for key:', key);
         }catch(err){
@@ -46,12 +49,14 @@ class RedisCache{
 
     async delPattern(pattern){
         try{
-            if(!REDIS_ENABLED) return null;
+            dbgr('Redis ENABLED value in delPattern:', Redis);
+            if(Redis!=='true') return null;
             const keys = await client.keys(pattern);
             if(keys.length == 0){
                 dbgr('No cache keys found for pattern:', pattern);
                 return;
             }
+            dbgr('Cache keys found for pattern:', pattern, 'Keys:', keys);
             await client.del(keys);
             dbgr('Cache deleted for pattern:', pattern, 'Keys:', keys);
         }catch(err){
@@ -61,7 +66,8 @@ class RedisCache{
 
     async flushAll(){
         try{
-            if(!REDIS_ENABLED) return null;
+            dbgr('Redis ENABLED value in flushAll:', Redis);
+            if(Redis!=='true') return null;
             await client.flushAll();
             dbgr('All cache flushed');
         }catch(err){

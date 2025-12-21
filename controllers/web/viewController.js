@@ -1,8 +1,5 @@
-const userModel = require('../../models/user-model');
-const ownerModel = require('../../models/owner-model');
-const productModel = require('../../models/product-model');
-
 const productService = require('../../services/productService');
+const dashboardService = require('../../services/dashboardService');
 
 const dbgr = require('debug')('app:viewController');
 
@@ -64,10 +61,7 @@ const showCartPage = async (req,res,next)=>{
     try{
         dbgr("Rendering cart page");
         const user = req.user;
-        const cart = user.cart;
-        dbgr("Cart Products: ", cart);
-        const cartProducts = await Promise.all(cart.map( item => productModel.findById(item.productId) ));
-        dbgr("Fetched Products: ", cartProducts);
+        const cartProducts = await dashboardService.getCartProducts(user);
         const success = req.flash('success');
         const error = req.flash('error');
         res.render('cartPage', {cartProducts, user, success, error});

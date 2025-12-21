@@ -1,4 +1,6 @@
 const productModel = require('../models/product-model');
+const userModel = require('../models/user-model');
+const ownerModel = require('../models/owner-model');
 
 const dbgr = require('debug')('app:dashboardService');
 
@@ -78,9 +80,37 @@ class DashboardService {
         }
     }
 
+    async getCartProducts(user){
+        try{
+            dbgr('Fetching cart products for user:', user._id);
+
+            const cacheKey = `cart:products:${user._id}`;
+            const cachedData = await cache.get(cacheKey);
+
+            if(cachedData){
+                dbgr('Returning cached cart products for user:', user._id);
+                return JSON.parse(cachedData);
+            }
+
+            const cart = user.cart;
+            dbgr('User cart items:', cart);
+            const cartProducts = await Promise.all(cart.map(item=> productModel.findById(item.productId)));
+            dbgr('Fetched cart products:', cartProducts);
+
+            await cache.set(cacheKey, JSON.stringify(cartProducts));
+
+            return cartProducts;
+        }catch(error){
+            dbgr('Error in getCartProducts:', error);
+            throw new Error('Error fetching cart products: ' + error.message);
+        }
+    }
+
     async decreaseProductQuantity(user, productId){
         try{
             dbgr('Decreasing product quantity for productId:', productId, 'and user:', user._id);
+
+            user = await userModel.findById(user._id) || await ownerModel.findById(user._id);
 
             const cartItem = user.cart.find(item => item.productId.toString() === productId.toString());
             if(!cartItem){
@@ -91,6 +121,10 @@ class DashboardService {
                 await user.save();
                 dbgr('Decreased quantity of product in cart:', cartItem);
             }
+
+            await cache.delPattern('cart:*');
+            await cache.delPattern('user:*');
+
             return;
         }catch(error){
             dbgr('Error in decreaseProductQuantity:', error);
@@ -102,6 +136,8 @@ class DashboardService {
         try{
             dbgr('Increasing product quantity for productId:', productId, 'and user:', user._id);
 
+            user = await userModel.findById(user._id) || await ownerModel.findById(user._id);
+
             const cartItem = user.cart.find(item => item.productId.toString() === productId.toString());
             if(!cartItem){
                 throw new Error('Product not found in cart');
@@ -111,6 +147,10 @@ class DashboardService {
                 await user.save();
                 dbgr('Increased quantity of product in cart:', cartItem);
             }
+
+            await cache.delPattern('cart:*');
+            await cache.delPattern('user:*');
+
             return;
         }catch(error){
             dbgr('Error in increaseProductQuantity:', error);
@@ -122,6 +162,8 @@ class DashboardService {
         try{
             dbgr('Removing product from cart for productId:', productId, 'and user:', user._id);
 
+            user = await userModel.findById(user._id) || await ownerModel.findById(user._id);
+
             const cartItem = user.cart.find(item => item.productId.toString() === productId.toString());
             if(!cartItem){
                 throw new Error('Product not found in cart');
@@ -129,6 +171,10 @@ class DashboardService {
             user.cart = user.cart.filter(item => item.productId.toString() !== productId.toString());
             await user.save();
             dbgr('Removed product from cart:', productId);
+
+            await cache.delPattern('cart:*');
+            await cache.delPattern('user:*');
+            
             return;
         }catch(error){
             dbgr('Error in removeProductFromCart:', error);
