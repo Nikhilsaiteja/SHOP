@@ -34,9 +34,9 @@
                 <div>
                     <label for="filter" class="text-blue-400">Filter By:</label>
                     <select id="filter" name="filter" class="border border-gray-300 rounded p-2" onchange="this.form.submit()">
-                        <option value="select" selected>--select--</option>
-                        <option value="new">new</option>
-                        <option value="old">old</option>
+                        <option value="select" <%= filter==='select'?'selected':''%>>--select--</option>
+                        <option value="new" <%= filter==='new'?'selected':''%>>new</option>
+                        <option value="old" <%= filter==='old'?'selected':''%>>old</option>
                     </select>
                 </div>
             </form>

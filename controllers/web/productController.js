@@ -2,7 +2,7 @@ const ProductService = require('../../services/productService');
 
 const dbgr = require('debug')('app:productController');
 
-const createProduct = async(req,res,next)=>{
+const createProduct = async(req,res)=>{
     try{
         dbgr("Request received in controller layer: ", req.body);
         const { name, price, discount, category } = req.body;
@@ -22,7 +22,7 @@ const createProduct = async(req,res,next)=>{
     }
 }
 
-const likeProduct = async(req,res,next)=>{
+const likeProduct = async(req,res)=>{
     try{
         const productId = req.params.productId;
         const userId = req.user._id;
@@ -38,7 +38,7 @@ const likeProduct = async(req,res,next)=>{
     }
 }
 
-const addToCart = async(req,res,next)=>{
+const addToCart = async(req,res)=>{
     try{
         const productId = req.params.productId;
         const user = req.user;
