@@ -3,7 +3,7 @@ const dashboardService = require('../../services/dashboardService');
 
 const dbgr = require('debug')('app:viewController');
 
-const showRegisterPage = async (req,res,next)=>{
+const showRegisterPage = async (req,res)=>{
     try{
         dbgr("Rendering register page");
         const success = req.flash('success');
@@ -16,7 +16,7 @@ const showRegisterPage = async (req,res,next)=>{
     }
 }
 
-const showLoginPage = async (req,res,next)=>{
+const showLoginPage = async (req,res)=>{
     try{
         dbgr("Rendering login page");
         const success = req.flash('success');
@@ -29,14 +29,15 @@ const showLoginPage = async (req,res,next)=>{
     }
 }
 
-const showDashboard = async (req,res,next)=>{
+const showDashboard = async (req,res)=>{
     try{
         dbgr("Rendering dashboard page");
         const user = req.user;
         const products = await productService.getAllProducts();
         const success = req.flash('success');
         const error = req.flash('error');
-        res.render('dashboardPage', {products, user, success, error});
+        const filter = 'select';
+        res.render('dashboardPage', {products, user, success, error, filter});
     }catch(err){
         dbgr("Error in showDashboard: ", err);
         req.flash('error', err.message || 'Error loading dashboard');
@@ -44,7 +45,7 @@ const showDashboard = async (req,res,next)=>{
     }
 }
 
-const showCreateProductPage = async (req,res,next)=>{
+const showCreateProductPage = async (req,res)=>{
     try{
         dbgr("Rendering create product page");
         const success = req.flash('success');
@@ -57,7 +58,7 @@ const showCreateProductPage = async (req,res,next)=>{
     }
 }
 
-const showCartPage = async (req,res,next)=>{
+const showCartPage = async (req,res)=>{
     try{
         dbgr("Rendering cart page");
         const user = req.user;

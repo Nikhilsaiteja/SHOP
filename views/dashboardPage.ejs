@@ -23,9 +23,11 @@
             <button>
                 <a href="/dashboard/cart">cart (<%= user.cart.length %>)</a>
             </button>
-            <button>
-                <a href="/dashboard/profile">profile</a>
-            </button>
+            <select class="outline-none border-none" id="profile" name="profile" onchange="if(this.value) {window.location.href = this.value}">
+                <option value="profile" selected>profile</option>
+                <option value="/user/logout/<%= user._id %>">logout</option>
+                <option class="text-red-500" value="/user/delete/<%= user._id %>">delete</option>
+            </select>
         </div>
     </div>
     <div class="flex flex-row gap-[5rem]">
@@ -34,9 +36,9 @@
                 <div>
                     <label for="filter" class="text-blue-400">Filter By:</label>
                     <select id="filter" name="filter" class="border border-gray-300 rounded p-2" onchange="this.form.submit()">
-                        <option value="select" selected>--select--</option>
-                        <option value="new">new</option>
-                        <option value="old">old</option>
+                        <option value="select" <%= filter==='select'?'selected':''%>>--select--</option>
+                        <option value="new" <%= filter==='new'?'selected':''%>>new</option>
+                        <option value="old" <%= filter==='old'?'selected':''%>>old</option>
                     </select>
                 </div>
             </form>

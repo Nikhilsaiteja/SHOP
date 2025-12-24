@@ -2,7 +2,7 @@ const DashboardService = require('../../services/dashboardService');
 
 const dbgr = require('debug')('app:dashboardController');
 
-const filterBy = async  (req,res,next)=>{
+const filterBy = async  (req,res)=>{
     try{
         const { filter } = req.body;
         dbgr('Filter by:', filter);
@@ -12,7 +12,7 @@ const filterBy = async  (req,res,next)=>{
         const success = req.flash('success');
         const error = req.flash('error');
         dbgr(`products after filtering by ${filter}:`, products);
-        res.render('dashboardPage', {products, user, success, error});
+        res.render('dashboardPage', {products, user, success, error, filter});
     }catch(error){
         dbgr('Error in filterBy controller:', error);
         req.flash('error', error.message || 'Error filtering dashboard');
@@ -20,7 +20,7 @@ const filterBy = async  (req,res,next)=>{
     }
 }
 
-const searchBy = async (req,res,next)=>{
+const searchBy = async (req,res)=>{
     try{
         const { searchText } = req.body;
         const user = req.user;
@@ -29,8 +29,9 @@ const searchBy = async (req,res,next)=>{
         req.flash('success', `Searched for ${searchText} successfully`);
         const success = req.flash('success');
         const error = req.flash('error');
+        const filter = 'select';
         dbgr(`products after searching for ${searchText}:`, products);
-        res.render('dashboardPage', {products, user, success, error});
+        res.render('dashboardPage', {products, user, success, error, filter});
     }catch(error){
         dbgr('Error in searchBy controller:', error);
         req.flash('error', error.message || 'Error searching dashboard');
@@ -38,7 +39,7 @@ const searchBy = async (req,res,next)=>{
     }
 }
 
-const decreaseProductQuantityInCart = async (req,res,next)=>{
+const decreaseProductQuantityInCart = async (req,res)=>{
     try{
         const { productId } = req.params;
         const user = req.user;
@@ -53,7 +54,7 @@ const decreaseProductQuantityInCart = async (req,res,next)=>{
     }
 }
 
-const increaseProductQuantityInCart = async (req,res,next)=>{
+const increaseProductQuantityInCart = async (req,res)=>{
     try{
         const { productId } = req.params;
         const user = req.user;
@@ -68,7 +69,7 @@ const increaseProductQuantityInCart = async (req,res,next)=>{
     }
 }
 
-const removeProductFromCart = async (req,res,next)=>{
+const removeProductFromCart = async (req,res)=>{
     try{
         const { productId } = req.params;
         const user = req.user;

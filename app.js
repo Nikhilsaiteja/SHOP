@@ -17,6 +17,34 @@ app.use(cors({
     credentials: true
 }))
 
+const helmet = require('helmet');
+// app.use(helmet());
+
+const rateLimit = require('express-rate-limit');
+
+const registerLimiter = rateLimit({
+    windowMs: parseInt(process.env.RATE_LIMITER_WINDOW_MS_MIN), // 15 minutes
+    max: parseInt(process.env.RATE_LIMITER_MIN_REQUESTS),
+    message: 'Too many accounts created, please try again after 15 minutes'
+});
+
+const loginLimiter = rateLimit({
+    windowMs: parseInt(process.env.RATE_LIMITER_WINDOW_MS_MIN), // 15 minutes
+    max: parseInt(process.env.RATE_LIMITER_MIN_REQUESTS),
+    message: 'Too many login attempts, please try again after 15 minutes',
+    skipSuccessfulRequests: true
+});
+
+const appLimiter = rateLimit({
+    windowMs: parseInt(process.env.RATE_LIMITER_WINDOW_MS_MAX), // 1 hour
+    max: parseInt(process.env.RATE_LIMITER_MAX_REQUESTS),
+    message: 'Too many requests from this IP, please try again after a minute'
+});
+
+app.use('/user/registration', registerLimiter);
+app.use('/user/login', loginLimiter);
+app.use(appLimiter);
+
 require('./config/mongoose-config')();
 const redisClient = require('./config/redis-config');
 
@@ -35,7 +63,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: process.env.SESSION_COOKIE_MAX_AGE
+        maxAge: parseInt(process.env.SESSION_COOKIE_MAX_AGE)
     }
 }));
 app.use(flash());

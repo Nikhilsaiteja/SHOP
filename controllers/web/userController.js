@@ -22,7 +22,7 @@ const registerUser = async (req,res,next)=>{
     }
 }
 
-const loginUser = async (req,res,next)=>{
+const loginUser = async (req,res)=>{
     try{
         dbgr('Request body received in controller:', req.body);
         const {email, password} = req.body;
@@ -42,7 +42,7 @@ const loginUser = async (req,res,next)=>{
     }
 }
 
-const logoutUser = async (req,res,next)=>{
+const logoutUser = async (req,res)=>{
     try{
         const userId = req.params.id;
         dbgr('Logging out user with ID:', userId);
@@ -50,7 +50,7 @@ const logoutUser = async (req,res,next)=>{
         res.clearCookie('token');
 
         req.flash('success', 'User logged out successfully');
-        res.redirect('/login');
+        res.redirect('/user/login');
     }catch(error){
         dbgr('Error in logoutUser controller:', error);
         req.flash('error', error.message || 'Error logging out user');
@@ -58,7 +58,7 @@ const logoutUser = async (req,res,next)=>{
     }
 }
 
-const deleteUser = async (req,res,next)=>{
+const deleteUser = async (req,res)=>{
     try{
         const userId = req.params.id;
         dbgr('Deleting user with ID:', userId);

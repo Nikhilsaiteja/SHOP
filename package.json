@@ -5,16 +5,12 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-
     "dev": "cross-env NODE_ENV=dev nodemon app.js",
     "dev:debug": "cross-env NODE_ENV=dev DEBUG=app:* nodemon app.js",
-
     "qa": "cross-env NODE_ENV=qa node app.js",
     "qa:debug": "cross-env NODE_ENV=qa DEBUG=app:* node app.js",
-
     "uat": "cross-env NODE_ENV=uat node app.js",
     "uat:debug": "cross-env NODE_ENV=uat DEBUG=app:* node app.js",
-    
     "start": "cross-env NODE_ENV=production node app.js",
     "prod:debug": "cross-env NODE_ENV=production DEBUG=app:* node app.js"
   },
@@ -41,7 +37,9 @@
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
     "express-session": "^1.18.2",
+    "helmet": "^8.1.0",
     "joi": "^18.0.2",
     "jsdom": "^27.2.0",
     "jsonwebtoken": "^9.0.3",

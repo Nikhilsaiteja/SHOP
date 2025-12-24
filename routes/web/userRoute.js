@@ -14,9 +14,9 @@ router.post('/register',validateUserRegisteration, registerUser);
 
 router.post('/login', validateUserLogin, loginUser);
 
-router.post('/logout/:id', logoutUser);
+router.get('/logout/:id', logoutUser);
 
-router.delete('/delete/:id', deleteUser);
+router.get('/delete/:id', deleteUser);
 
 router.get('/registration', showRegisterPage);
 
