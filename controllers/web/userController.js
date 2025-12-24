@@ -50,7 +50,7 @@ const logoutUser = async (req,res)=>{
         res.clearCookie('token');
 
         req.flash('success', 'User logged out successfully');
-        res.redirect('/login');
+        res.redirect('/user/login');
     }catch(error){
         dbgr('Error in logoutUser controller:', error);
         req.flash('error', error.message || 'Error logging out user');

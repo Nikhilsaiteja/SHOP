@@ -23,20 +23,21 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 const registerLimiter = rateLimit({
-    windowMs: 15*60*1000, // 15 minutes
-    max: 5,
+    windowMs: parseInt(process.env.RATE_LIMITER_WINDOW_MS_MIN), // 15 minutes
+    max: parseInt(process.env.RATE_LIMITER_MIN_REQUESTS),
     message: 'Too many accounts created, please try again after 15 minutes'
 });
 
 const loginLimiter = rateLimit({
-    windowMs: 15*60*1000, // 15 minutes
-    max: 3,
-    message: 'Too many login attempts, please try again after 15 minutes'
+    windowMs: parseInt(process.env.RATE_LIMITER_WINDOW_MS_MIN), // 15 minutes
+    max: parseInt(process.env.RATE_LIMITER_MIN_REQUESTS),
+    message: 'Too many login attempts, please try again after 15 minutes',
+    skipSuccessfulRequests: true
 });
 
 const appLimiter = rateLimit({
-    windowMs: 1*60*1000, // 1 minute
-    max: 100,
+    windowMs: parseInt(process.env.RATE_LIMITER_WINDOW_MS_MAX), // 1 hour
+    max: parseInt(process.env.RATE_LIMITER_MAX_REQUESTS),
     message: 'Too many requests from this IP, please try again after a minute'
 });
 
