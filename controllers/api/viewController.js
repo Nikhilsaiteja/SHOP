@@ -1,8 +1,5 @@
-const userModel = require('../../models/user-model');
-const ownerModel = require('../../models/owner-model');
-const productModel = require('../../models/product-model');
-
 const productService = require('../../services/productService');
+const dashboardService = require('../../services/dashboardService');
 
 const dbgr = require('debug')('app:viewController');
 
@@ -18,6 +15,21 @@ const showRegisterPage = async (req,res,next)=>{
     }catch(err){
         dbgr("Error in showRegisterPage: ", err);
         next(err);
+    }
+}
+
+const showLoginPage = async (req,res)=>{
+    try{
+        dbgr("Rendering login page");
+        res.status(200).json({
+            message: "Login page data",
+            data: {},
+            success: true,
+            timestamp: new Date().toISOString()
+        });
+    }catch(err){
+        dbgr("Error in showLoginPage: ", err);
+        return next(err);
     }
 }
 
@@ -40,7 +52,45 @@ const showDashboard = async (req,res,next)=>{
     }
 }
 
+const showCreateProductPage = async (req,res)=>{
+    try{
+        dbgr("Rendering create product page");
+        res.status(200).json({
+            message: "Create product page data",
+            data: {},
+            success: true,
+            timestamp: new Date().toISOString()
+        });
+    }catch(err){
+        dbgr("Error in showCreateProductPage: ", err);
+        return next(err);
+    }
+}
+
+const showCartPage = async (req,res)=>{
+    try{
+        dbgr("Rendering cart page");
+        const user = req.user;
+        const cartProducts = await dashboardService.getCartProducts(user);
+        res.status(200).json({
+            message: "Cart page data fetched successfully",
+            data: {
+                cartProducts,
+                user
+            },
+            success: true,
+            timestamp: new Date().toISOString()
+        });
+    }catch(err){
+        dbgr("Error in showCartPage: ", err);
+        return next(err);
+    }
+}
+
 module.exports = {
     showRegisterPage,
-    showDashboard
+    showLoginPage,
+    showDashboard,
+    showCreateProductPage,
+    showCartPage
 }
