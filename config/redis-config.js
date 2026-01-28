@@ -2,28 +2,35 @@ const redis = require('redis');
 
 const dbgr = require('debug')('app:redis-config');
 
-const client = redis.createClient({
-    socket:{
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT
-    },
-    username: process.env.REDIS_USERNAME,
-    password: process.env.REDIS_PASSWORD
-});
+dbgr('Redis enabled status: ', process.env.REDIS_ENABLED);
 
-client.on('error', (err)=>{
-    dbgr('Redis Client Error', err);
-});
+if(process.env.REDIS_ENABLED==='true'){
+    const client = redis.createClient({
+        socket:{
+            host: process.env.REDIS_HOST,
+            port: process.env.REDIS_PORT
+        },
+        username: process.env.REDIS_USERNAME,
+        password: process.env.REDIS_PASSWORD
+    });
 
-const connectRedis = async()=>{
-    try{
-        await client.connect();
-        dbgr('Connected to Redis successfully');
-    }catch(err){
-        dbgr('Error connecting to Redis: ', err);
-    }
-};
+    client.on('error', (err)=>{
+        dbgr('Redis Client Error', err);
+    });
 
-connectRedis();
+    const connectRedis = async()=>{
+        try{
+            await client.connect();
+            dbgr('Connected to Redis successfully');
+        }catch(err){
+            dbgr('Error connecting to Redis: ', err);
+        }
+    };
 
-module.exports = client;
+    connectRedis();
+
+    module.exports = client;
+}else{
+    dbgr('Redis is disabled. Skipping Redis client setup.');
+    module.exports = null;
+}
