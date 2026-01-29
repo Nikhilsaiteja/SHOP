@@ -11,9 +11,9 @@ router.get('/test', async (req,res)=>{
     res.send('Dashboard route is working');
 });
 
-router.get('/', showDashboard);
+router.get('/data', showDashboard);
 
-router.post('/filter', filterBy);
+router.get('/', filterBy);
 
 router.post('/search', searchBy);
 
