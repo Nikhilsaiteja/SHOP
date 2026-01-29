@@ -8,6 +8,7 @@ class RedisCache{
 
     async get(key){
         try{
+            if(!client) return null;
             const value = await client.get(key);
             if(value){
                 dbgr('Cache hit for key:', key);
@@ -23,6 +24,7 @@ class RedisCache{
 
     async set(key,value,ttl=DEFAULT_EXPIRY){
         try{
+            if(!client) return null;
             await client.set(key, JSON.stringify(value), ttl);
             dbgr('Cache set for key:', key, 'with TTL:', ttl);
             return true;
@@ -33,6 +35,7 @@ class RedisCache{
 
     async del(key){
         try{
+            if(!client) return null;
             await client.del(key);
             dbgr('Cache deleted for key:', key);
         }catch(err){
@@ -42,6 +45,7 @@ class RedisCache{
 
     async delPattern(pattern){
         try{
+            if(!client) return null;
             const keys = await client.keys(pattern);
             if(keys.length == 0){
                 dbgr('No cache keys found for pattern:', pattern);
@@ -57,6 +61,7 @@ class RedisCache{
 
     async flushAll(){
         try{
+            if(!client) return null;
             await client.flushAll();
             dbgr('All cache flushed');
         }catch(err){
