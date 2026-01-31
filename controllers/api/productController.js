@@ -45,7 +45,27 @@ const likeProduct = async(req,res,next)=>{
     }
 }
 
+const addToCart = async(req,res)=>{
+    try{
+        const productId = req.params.productId;
+        const user = req.user;
+        dbgr("Adding to cart in controller layer: ", {productId, user});
+        const updatedUser = await ProductService.addToCart(productId, user);
+        dbgr("Response from service layer: ", updatedUser);
+        res.status(200).json({
+            message: 'Product added to cart successfully',
+            success: true,
+            user: updatedUser,
+            timestamp: new Date().toISOString()
+        });
+    }catch(err){
+        dbgr("Error in controller layer while adding to cart: ", err);
+        return next(err);
+    }
+}
+
 module.exports = {
     createProduct,
-    likeProduct
+    likeProduct,
+    addToCart
 };

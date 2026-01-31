@@ -32,7 +32,7 @@
     </div>
     <div class="flex flex-row gap-[5rem]">
         <div class="w-[18rem] flex flex-col gap-[5rem] p-[2rem] mt-[2rem]">
-            <form method="post" action="/dashboard/filter">
+            <form method="get" action="/dashboard">
                 <div>
                     <label for="filter" class="text-blue-400">Filter By:</label>
                     <select id="filter" name="filter" class="border border-gray-300 rounded p-2" onchange="this.form.submit()">
@@ -42,13 +42,13 @@
                     </select>
                 </div>
             </form>
-            <form method="post" action="/dashboard/filter">
+            <form method="get" action="/dashboard">
                 <div class="flex flex-col gap-[2rem] mr-[7rem] text-blue-400">
                     <input type="submit" name="filter" value="discounted" cursor="pointer">
                     <input type="submit" name="filter" value="popular">
                 </div>
             </form>
-            <form method="post" action="/dashboard/filter">
+            <form method="get" action="/dashboard">
                 <div class="flex flex-col gap-[2rem] mr-[7rem] text-blue-400">
                     <input type="submit" name="filter" value="clothes">
                     <input type="submit" name="filter" value="electronics">
@@ -57,6 +57,7 @@
                     <input type="submit" name="filter" value="accessories">
                 </div>
             </form>
+            <a href="/dashboard/data" class="text-red-500">Clear Filters</a>
         </div>
         <div>
             <form method="post" action="/dashboard/search">

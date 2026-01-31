@@ -4,7 +4,7 @@ const dbgr = require('debug')('app:dashboardController');
 
 const filterBy = async  (req,res)=>{
     try{
-        const { filter } = req.body;
+        const { filter } = req.query;
         dbgr('Filter by:', filter);
         const user = req.user;
         const products = await DashboardService.getDashboardDataByFilter(filter);
