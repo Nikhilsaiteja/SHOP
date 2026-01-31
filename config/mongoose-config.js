@@ -10,6 +10,7 @@ const connectDB = async () => {
         dbgr('Connected to MongoDB successfully');
     } catch (error) {
         dbgr('Error connecting to MongoDB:', error);
+        process.exit(1);
     }
 }
 

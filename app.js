@@ -59,7 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const session = require('express-session');
 const flash = require('connect-flash');
 app.use(session({
-    secret: process.env.SESSSION_SECRET || 'defaultsecret',
+    secret: process.env.SESSION_SECRET || 'defaultsecret',
     resave: false,
     saveUninitialized: false,
     cookie: {
