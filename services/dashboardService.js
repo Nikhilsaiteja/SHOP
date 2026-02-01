@@ -8,8 +8,11 @@ const cache = require('../utils/redisCache');
 
 class DashboardService {
 
-    async getDashboardDataByFilter(filter){
+    async getDashboardDataByFilter(filter,page=1){
         try{
+            let limit = parseInt(process.env.ITEMS_PER_PAGE) || 10;
+            let skip = (page-1)*limit;
+
             dbgr('Fetching dashboard data with filter:', filter);
 
             const cacheKey = `products:filter:${filter}`;
@@ -20,60 +23,120 @@ class DashboardService {
             }   
 
             let products;
+            let query={};
+            let sortOption={ createdAt: -1 };
             
             if(filter == 'new'){
-                products = await (await productModel.find({}));
-                dbgr('Fetched products (new):', products);
-
-                await cache.set(cacheKey, JSON.stringify(products));
+                query = {};
+                dbgr('Fetching products with query:', query);
             }
             else if(filter == 'old'){
-                products = (await productModel.find({})).reverse();
-                dbgr('Fetched products (old):', products);
-
-                await cache.set(cacheKey, JSON.stringify(products));
+                query = {};
+                sortOption = { createdAt: -1 };
+                dbgr('Fetching products with query:', query, 'and sort option:', sortOption);
             }
             else if(filter == 'discounted'){
-                products = await productModel.find({ discount: { $gt: 0 }});
-                dbgr('Fetched products (discounted):', products);
-
-                await cache.set(cacheKey, JSON.stringify(products));
+                query = { discount: { $gt: 0 }};
+                sortOption = { discount: -1 };
+                dbgr('Fetching products with query:', query, 'and sort option:', sortOption);
             }
             else if(filter == 'popular'){
-                products = (await productModel.find({})).sort((a,b)=> a.likes.length - b.likes.length);
-                dbgr('Fetched products (popular):', products);
+                products = await productModel.aggregate([
+                    { $addFields: { likesCount: { $size: "$likes" }}},
+                    { $sort: { likesCount: -1 }},
+                    { $skip: skip },
+                    { $limit: limit }
+                ])
 
                 await cache.set(cacheKey, JSON.stringify(products));
+
+                const totalProducts = await productModel.countDocuments();
+                const totalPages = Math.ceil(totalProducts / limit);
+                const hasNextPage = page < totalPages;
+                const hasPrevPage = page > 1;
+                const nextPage = hasNextPage ? page + 1 : null;
+                const prevPage = hasPrevPage ? page - 1 : null;
+                return {
+                    products,
+                    pagination: {
+                        currentPage: page,
+                        totalPages,
+                        hasNextPage,
+                        hasPrevPage,
+                        nextPage,
+                        prevPage
+                    }
+                }
             }
             else{
-                products = await productModel.find({ category: filter });
-                dbgr('Fetched products (filter):', products);
-
-                await cache.set(cacheKey, JSON.stringify(products));
+                query = {category: filter};
+                dbgr('Fetching products with query:', query);
             }
-            return products;
+
+            products = await productModel.find(query).sort(sortOption).skip(skip).limit(limit);
+            dbgr('Fetched products:', products);
+            
+            await cache.set(cacheKey, JSON.stringify(products));
+
+            const totalProducts = await productModel.countDocuments(query);
+            const totalPages = Math.ceil(totalProducts / limit);
+            const hasNextPage = page < totalPages;
+            const hasPrevPage = page > 1;
+            const nextPage = hasNextPage ? page + 1 : null;
+            const prevPage = hasPrevPage ? page - 1 : null;
+            return {
+                products,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    hasNextPage,
+                    hasPrevPage,
+                    nextPage,
+                    prevPage
+                }
+            }
         }catch(error){
             dbgr('Error in getDashboardData:', error);
             throw new Error('Error fetching dashboard data: ' + error.message);
         }
     }
 
-    async getDashboardDataBySearch(searchText){
+    async getDashboardDataBySearch(searchText,page=1){
         try{
             dbgr('Fetching dashboard data with search text:', searchText);
 
             const cacheKey = `products:search:${searchText}`;
             const cachedData = await cache.get(cacheKey);
 
+            let limit = parseInt(process.env.ITEMS_PER_PAGE) || 10;
+            let skip = (page-1)*limit;
+
             if(cachedData){
                 dbgr('Returning cached data for search text:', searchText);
                 return JSON.parse(cachedData);
             }
 
-            const products = await productModel.find({ $text: { $search: searchText } });
+            const products = await productModel.find({ $text: { $search: searchText } }).skip(skip).limit(limit);
             dbgr('Fetched products (search):', products);
             await cache.set(cacheKey, JSON.stringify(products));
-            return products;
+
+            const totalProducts = await productModel.countDocuments({ $text: { $search: searchText } });
+            const totalPages = Math.ceil(totalProducts / limit);
+            const hasNextPage = page < totalPages;
+            const hasPrevPage = page > 1;
+            const nextPage = hasNextPage ? page + 1 : null;
+            const prevPage = hasPrevPage ? page - 1 : null;
+            return {
+                products,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    hasNextPage,
+                    hasPrevPage,
+                    nextPage,
+                    prevPage
+                }
+            }
         }catch(error){
             dbgr('Error in getDashboardDataBySearch:', error);
             throw new Error('Error fetching dashboard data by search: ' + error.message);

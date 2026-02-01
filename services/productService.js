@@ -120,21 +120,38 @@ class ProductService{
         }
     }
 
-    async getAllProducts(){
+    async getAllProducts(page=1){
         try{
-            const cacheKey = 'products:all';
-            const cacheProducts = await cache.get(cacheKey);
-            if(cacheProducts){
-                dbgr("Products fetched from cache: ", cacheProducts);
-                return JSON.parse(cacheProducts);
+            dbgr("Fetching all products in service layer by pagination");
+            let limit = parseInt(process.env.ITEMS_PER_PAGE) || 10;
+            let skip = (page-1)*limit;
+
+            const cacheKey = `products:page:${page}`;
+            let cacheData = await cache.get(cacheKey);
+            if(cacheData){
+                dbgr("Products fetched from cache: ", cacheData);
+                return JSON.parse(cacheData);
             }
+            const products = await productModel.find().skip(skip).limit(limit).lean();
+            dbgr("Products fetched from DB: ", products);
+            const totalProducts = await productModel.countDocuments();
+            const totalPages = Math.ceil(totalProducts / limit);
 
-            dbgr("Fetching products from database");
-            const products = await productModel.find({});
-            dbgr("Fetched products: ", products);
-
-            await cache.set(cacheKey, JSON.stringify(products));
-            return products;
+            const hasNextPage = page < totalPages;
+            const hasPrevPage = page > 1;
+            const result = {
+                products,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    hasNextPage,
+                    hasPrevPage,
+                    nextPage: hasNextPage?page+1:null,
+                    prevPage: hasPrevPage?page-1:null
+                }
+            };
+            await cache.set(cacheKey, JSON.stringify(result));
+            return result;
         }catch(err){
             dbgr("Error in fetching products: ", err);
             throw err;

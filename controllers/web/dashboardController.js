@@ -4,15 +4,18 @@ const dbgr = require('debug')('app:dashboardController');
 
 const filterBy = async  (req,res)=>{
     try{
-        const { filter } = req.query;
-        dbgr('Filter by:', filter);
+        dbgr('Query params:', req.query);
+        const { filter, page } = req.query;
+        dbgr('Filter by:', filter, 'Page:', page);
         const user = req.user;
-        const products = await DashboardService.getDashboardDataByFilter(filter);
+        const result = await DashboardService.getDashboardDataByFilter(filter, page);
         req.flash('success', `Filtered by ${filter} successfully`);
+        const products = result.products;
+        const pagination = result.pagination;
         const success = req.flash('success');
         const error = req.flash('error');
-        dbgr(`products after filtering by ${filter}:`, products);
-        res.render('dashboardPage', {products, user, success, error, filter});
+        dbgr(`products after filtering by ${filter}:`, result.products);
+        res.render('dashboardPage', {products, user, success, error, filter, pagination});
     }catch(error){
         dbgr('Error in filterBy controller:', error);
         req.flash('error', error.message || 'Error filtering dashboard');
@@ -22,20 +25,26 @@ const filterBy = async  (req,res)=>{
 
 const searchBy = async (req,res)=>{
     try{
+        dbgr('Body params:', req.body);
         const { searchText } = req.body;
+        dbgr('Query params:', req.query);
+        const page = req.query.page || 1;
+        dbgr('Search by:', searchText, 'Page:', page);
         const user = req.user;
         dbgr('Search by:', searchText);
-        const products = await DashboardService.getDashboardDataBySearch(searchText);
+        const result = await DashboardService.getDashboardDataBySearch(searchText, page);
         req.flash('success', `Searched for ${searchText} successfully`);
+        const products = result.products;
+        const pagination = result.pagination;
         const success = req.flash('success');
         const error = req.flash('error');
         const filter = 'select';
         dbgr(`products after searching for ${searchText}:`, products);
-        res.render('dashboardPage', {products, user, success, error, filter});
+        res.render('dashboardPage', {products, user, success, error, filter, pagination});
     }catch(error){
         dbgr('Error in searchBy controller:', error);
         req.flash('error', error.message || 'Error searching dashboard');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }
 }
 

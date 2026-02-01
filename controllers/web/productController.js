@@ -14,7 +14,7 @@ const createProduct = async(req,res)=>{
         const newProduct = await ProductService.createProduct(name, ownerId, price, discount, category, images);
         dbgr("Response from service layer: ", newProduct);
         req.flash('success', 'Product created successfully');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }catch(err){
         dbgr("Error in controller layer while creating product: ", err);
         req.flash('error', err.message || 'Error creating product');
@@ -30,11 +30,11 @@ const likeProduct = async(req,res)=>{
 
         const updatedProduct = await ProductService.likeProduct(productId, userId);
         dbgr("Response from service layer: ", updatedProduct);
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }catch(err){
         dbgr("Error in controller layer while liking product: ", err);
         req.flash('error', err.message || 'Error liking product');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }
 }
 
@@ -46,11 +46,11 @@ const addToCart = async(req,res)=>{
         const updatedUser = await ProductService.addToCart(productId, user);
         dbgr("Response from service layer: ", updatedUser);
         req.flash('success', 'Product added to cart successfully');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }catch(err){
         dbgr("Error in controller layer while adding to cart: ", err);
         req.flash('error', err.message || 'Error adding to cart');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }
 }
 
