@@ -65,12 +65,12 @@
                     <input type="text" name="searchText" placeholder="Search products..." class="border border-gray-500 rounded p-2 w-[36rem] mb-[2rem] px-2 outline-none" onchange="this.form.submit()">
                 </div>
             </form>
-            <div class="grid grid-cols-4 gap-[3rem] mt-[1rem]">
+            <div class="grid grid-cols-5 gap-[3rem] mt-[1rem]">
                 <% if(products.length>0){ %>
                     <% products.forEach((product)=> { %>
-                        <div class="w-[16rem] h-[21rem] border-2 border-blue-300 hover:shadow-lg hover:scale-105 transition-transform duration-200 rounded-md">
+                        <div class="w-[13rem] h-[18rem] border-2 border-blue-300 hover:shadow-lg hover:scale-105 transition-transform duration-200 rounded-md">
                             <div class="content-center flex flex-col items-center gap-4 p-2 rounded-md">
-                                <img class="w-[15rem] h-[16rem] rounded-md bg-grey-500" src="<%= product.images[0] %>">
+                                <img class="w-[12rem] h-[13rem] rounded-md bg-grey-500" src="<%= product.images[0] %>">
                             </div>
                             <div>
                                 <div class="block ml-2 mr-2 flex flex-row justify-between">
@@ -95,7 +95,7 @@
             </div>
         </div>
     </div>
-    <div class="ml-[20rem] flex flex-row justify-between mb-[2rem] mr-[10rem]">
+    <div class="ml-[20rem] flex flex-row justify-between mb-[2rem] mr-[13rem]">
         <button>
             <a href="/dashboard/data?filter=<%= filter %>&page=<%= pagination.prevPage %>">previous</a>
         </button>
