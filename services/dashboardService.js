@@ -11,6 +11,7 @@ class DashboardService {
     async getDashboardDataByFilter(filter,page=1){
         try{
             let limit = parseInt(process.env.ITEMS_PER_PAGE) || 10;
+            page = parseInt(page);
             let skip = (page-1)*limit;
 
             dbgr('Fetching dashboard data with filter:', filter);
@@ -26,13 +27,13 @@ class DashboardService {
             let query={};
             let sortOption={ createdAt: -1 };
             
-            if(filter == 'new'){
+            if(filter == 'new' || filter == 'select'){
                 query = {};
                 dbgr('Fetching products with query:', query);
             }
             else if(filter == 'old'){
                 query = {};
-                sortOption = { createdAt: -1 };
+                sortOption = { createdAt: 1 };
                 dbgr('Fetching products with query:', query, 'and sort option:', sortOption);
             }
             else if(filter == 'discounted'){
@@ -109,6 +110,7 @@ class DashboardService {
             const cachedData = await cache.get(cacheKey);
 
             let limit = parseInt(process.env.ITEMS_PER_PAGE) || 10;
+            page = parseInt(page);
             let skip = (page-1)*limit;
 
             if(cachedData){
@@ -116,11 +118,13 @@ class DashboardService {
                 return JSON.parse(cachedData);
             }
 
-            const products = await productModel.find({ $text: { $search: searchText } }).skip(skip).limit(limit);
+            let searchTextFormatted = searchText.includes(' ') ? `"${searchText}"` : searchText;
+
+            const products = await productModel.find({ $text: { $search: searchTextFormatted } }).skip(skip).limit(limit);
             dbgr('Fetched products (search):', products);
             await cache.set(cacheKey, JSON.stringify(products));
 
-            const totalProducts = await productModel.countDocuments({ $text: { $search: searchText } });
+            const totalProducts = await productModel.countDocuments({ $text: { $search: searchTextFormatted } });
             const totalPages = Math.ceil(totalProducts / limit);
             const hasNextPage = page < totalPages;
             const hasPrevPage = page > 1;

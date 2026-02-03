@@ -132,7 +132,7 @@ class ProductService{
                 dbgr("Products fetched from cache: ", cacheData);
                 return JSON.parse(cacheData);
             }
-            const products = await productModel.find().skip(skip).limit(limit).lean();
+            const products = await productModel.find().skip(skip).limit(limit).sort({ createdAt: -1 }).lean();
             dbgr("Products fetched from DB: ", products);
             const totalProducts = await productModel.countDocuments();
             const totalPages = Math.ceil(totalProducts / limit);

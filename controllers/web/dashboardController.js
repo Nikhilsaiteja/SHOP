@@ -5,7 +5,7 @@ const dbgr = require('debug')('app:dashboardController');
 const filterBy = async  (req,res)=>{
     try{
         dbgr('Query params:', req.query);
-        const { filter, page } = req.query;
+        let { filter, page } = req.query;
         dbgr('Filter by:', filter, 'Page:', page);
         const user = req.user;
         const result = await DashboardService.getDashboardDataByFilter(filter, page);
@@ -14,7 +14,8 @@ const filterBy = async  (req,res)=>{
         const pagination = result.pagination;
         const success = req.flash('success');
         const error = req.flash('error');
-        dbgr(`products after filtering by ${filter}:`, result.products);
+        dbgr(`products after filtering by ${filter}:`, products);
+        dbgr('Pagination info:', pagination);
         res.render('dashboardPage', {products, user, success, error, filter, pagination});
     }catch(error){
         dbgr('Error in filterBy controller:', error);

@@ -97,10 +97,10 @@
     </div>
     <div class="ml-[20rem] flex flex-row justify-between mb-[2rem] mr-[13rem]">
         <button>
-            <a href="/dashboard/data?filter=<%= filter %>&page=<%= pagination.prevPage %>">previous</a>
+            <a href="/dashboard?filter=<%= filter %>&page=<%= pagination.prevPage %>"><%= pagination.hasPrevPage ? 'previous' : '' %></a>
         </button>
         <button>
-            <a href="/dashboard/data?filter=<%= filter %>&page=<%= pagination.nextPage %>">next</a>
+            <a href="/dashboard?filter=<%= filter %>&page=<%= pagination.nextPage %>"><%= pagination.hasNextPage ? 'next' : '' %></a>
         </button>
     </div>
     <script src="/javascripts/flashScript.js"></script>
