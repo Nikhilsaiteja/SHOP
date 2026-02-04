@@ -32,16 +32,21 @@ const showLoginPage = async (req,res)=>{
 const showDashboard = async (req,res)=>{
     try{
         dbgr("Rendering dashboard page");
+        dbgr("Query params: ", req.query);
+        const page = parseInt(req.query.page) || 1;
         const user = req.user;
-        const products = await productService.getAllProducts();
+        const result = await productService.getAllProducts(page);
+        const products = result.products;
+        const pagination = result.pagination;
+        dbgr("Pagination info: ", pagination);
         const success = req.flash('success');
         const error = req.flash('error');
         const filter = 'select';
-        res.render('dashboardPage', {products, user, success, error, filter});
+        res.render('dashboardPage', {products, user, success, error, filter, pagination});
     }catch(err){
         dbgr("Error in showDashboard: ", err);
         req.flash('error', err.message || 'Error loading dashboard');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }
 }
 
@@ -54,7 +59,7 @@ const showCreateProductPage = async (req,res)=>{
     }catch(err){
         dbgr("Error in showCreateProductPage: ", err);
         req.flash('error', err.message || 'Error loading create product page');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }
 }
 
@@ -69,7 +74,7 @@ const showCartPage = async (req,res)=>{
     }catch(err){
         dbgr("Error in showCartPage: ", err);
         req.flash('error', err.message || 'Error loading cart page');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }
 }
 

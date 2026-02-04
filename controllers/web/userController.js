@@ -14,7 +14,7 @@ const registerUser = async (req,res,next)=>{
         res.cookie('token', token);
 
         req.flash('success', 'User registered successfully');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }catch(error){
         dbgr('Error in registerUser controller:', error);
         req.flash('error', error.message || 'Error registering user');
@@ -34,7 +34,7 @@ const loginUser = async (req,res)=>{
         res.cookie('token', token);
 
         req.flash('success', 'User logged in successfully');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }catch(error){
         dbgr('Error in loginUser controller:', error);
         req.flash('error', error.message || 'Error logging in user');
@@ -54,7 +54,7 @@ const logoutUser = async (req,res)=>{
     }catch(error){
         dbgr('Error in logoutUser controller:', error);
         req.flash('error', error.message || 'Error logging out user');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }
 }
 
@@ -70,7 +70,7 @@ const deleteUser = async (req,res)=>{
     }catch(error){
         dbgr('Error in deleteUser controller:', error);
         req.flash('error', error.message || 'Error deleting user');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard/data');
     }
 }
 
