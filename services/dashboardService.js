@@ -162,11 +162,22 @@ class DashboardService {
             const cart = user.cart;
             dbgr('User cart items:', cart);
             const cartProducts = await Promise.all(cart.map(item=> productModel.findById(item.productId)));
-            dbgr('Fetched cart products:', cartProducts);
 
-            await cache.set(cacheKey, JSON.stringify(cartProducts));
+            const cartProductsWithQuantity = cartProducts.map(product => {
+                const quantity = cart.find(item => item.productId.toString() === product._id.toString()).quantity;
+                const totalPrice = (product.price-product.discount) * quantity;
+                return {...product.toObject(), quantity, totalPrice};
+            });
 
-            return cartProducts;
+            dbgr('Fetched cart products with quantity:', cartProductsWithQuantity);
+
+            const totalCheckoutPrice = cartProductsWithQuantity.reduce((total, product) => total + product.totalPrice, 0);
+            dbgr('Total checkout price:', totalCheckoutPrice);
+
+
+            await cache.set(cacheKey, JSON.stringify({ cartProducts: cartProductsWithQuantity, totalCheckoutPrice }));
+
+            return { cartProducts: cartProductsWithQuantity, totalCheckoutPrice };
         }catch(error){
             dbgr('Error in getCartProducts:', error);
             throw new Error('Error fetching cart products: ' + error.message);
@@ -246,6 +257,22 @@ class DashboardService {
         }catch(error){
             dbgr('Error in removeProductFromCart:', error);
             throw new Error('Error removing product from cart: ' + error.message);
+        }
+    }
+
+    async checkoutFromCart(user){
+        try{
+            dbgr('Checking out from cart for user:', user._id);
+
+            user = await userModel.findById(user._id) || await ownerModel.findById(user._id);
+
+            user.cart = [];
+            await user.save();
+            dbgr('Cleared user cart after checkout');
+            await cache.delPattern('cart:*');
+        }catch(error){
+            dbgr('Error in checkoutFromCart:', error);
+            throw new Error('Error during checkout: ' + error.message);
         }
     }
 

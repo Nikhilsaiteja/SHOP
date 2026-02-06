@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { showDashboard, showCreateProductPage, showCartPage } = require('../../controllers/web/viewController');
+const { showDashboard, showCreateProductPage, showCartPage, showCheckoutPage } = require('../../controllers/web/viewController');
 const { filterBy, searchBy, decreaseProductQuantityInCart, increaseProductQuantityInCart, removeProductFromCart } = require('../../controllers/web/dashboardController');
 const isLoggedIn = require('../../middlewares/web/isLoggedIn');
 
@@ -26,5 +26,7 @@ router.get('/cart/minus/:productId', decreaseProductQuantityInCart);
 router.get('/cart/plus/:productId', increaseProductQuantityInCart);
 
 router.get('/cart/delete/:productId', removeProductFromCart);
+
+router.get('/checkout', showCheckoutPage);
 
 module.exports = router;

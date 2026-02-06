@@ -67,14 +67,29 @@ const showCartPage = async (req,res)=>{
     try{
         dbgr("Rendering cart page");
         const user = req.user;
-        const cartProducts = await dashboardService.getCartProducts(user);
+        const {cartProducts, totalCheckoutPrice} = await dashboardService.getCartProducts(user);
         const success = req.flash('success');
         const error = req.flash('error');
-        res.render('cartPage', {cartProducts, user, success, error});
+        res.render('cartPage', {cartProducts, totalCheckoutPrice, user, success, error});
     }catch(err){
         dbgr("Error in showCartPage: ", err);
         req.flash('error', err.message || 'Error loading cart page');
         res.redirect('/dashboard/data');
+    }
+}
+
+const showCheckoutPage = async (req,res)=>{
+    try{
+        dbgr("Rendering checkout page");
+        const user = req.user;
+        await dashboardService.checkoutFromCart(user);
+        const success = req.flash('success');
+        const error = req.flash('error');
+        res.render('checkoutPage', {user, success, error});
+    }catch(err){
+        dbgr("Error in showCheckoutPage: ", err);
+        req.flash('error', err.message || 'Error loading checkout page');
+        res.redirect('/dashboard/cart');
     }
 }
 
@@ -83,5 +98,6 @@ module.exports = {
     showLoginPage,
     showDashboard,
     showCreateProductPage,
-    showCartPage
+    showCartPage,
+    showCheckoutPage
 }
